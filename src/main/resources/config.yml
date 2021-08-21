@@ -21,7 +21,7 @@ chat:
 
   quitMessage:
     show: true
-    format: "&7[&a+&7] &7{username}"
+    format: "&7[&c-&7] &7{username}"
 
   # may break some plugins
   worldChat:

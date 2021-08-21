@@ -27,6 +27,8 @@ public class PlayerJoinListener extends AbstractListener {
 
         String format = ChatConfig.getChatJoinMessageFormat();
 
+        format = Chat2Go.parseColor(format);
+
         Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(user.getName()));
         Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
         Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));

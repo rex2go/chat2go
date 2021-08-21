@@ -40,6 +40,8 @@ public class PlayerQuitListener extends AbstractListener {
 
         String format = ChatConfig.getChatQuitMessageFormat();
 
+        format = Chat2Go.parseColor(format);
+
         Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(user.getName()));
         Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
         Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
