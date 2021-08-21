@@ -61,6 +61,22 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "filter.filterMode")
     private static String filterFilterMode;
 
+
+    // anti spam
+
+    @Getter
+    @ConfigInfo(path = "antiSpam.enabled")
+    private static boolean antiSpamEnabled;
+
+    @Getter
+    @ConfigInfo(path = "antiSpam.capsThreshold")
+    private static double antiSpamCapsThreshold;
+
+    @Getter
+    @ConfigInfo(path = "antiSpam.spaceThreshold")
+    private static double antiSpamSpaceThreshold;
+
+
     // TODO
 
     @Getter

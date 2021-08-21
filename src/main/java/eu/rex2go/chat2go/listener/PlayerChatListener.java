@@ -2,6 +2,7 @@ package eu.rex2go.chat2go.listener;
 
 import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.ChatPermission;
+import eu.rex2go.chat2go.chat.AntiSpam;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.exception.FilterException;
 import eu.rex2go.chat2go.placeholder.Placeholder;
@@ -44,7 +45,8 @@ public class PlayerChatListener extends AbstractListener {
             return;
         }
 
-        if (user.isMuted()) {
+        if (user.isMuted()
+            /*&& !user.hasPermission(ChatPermission.BYPASS_MUTE.getPermission())*/) { // FIXME disabled for debug purposes
             // TODO send message
             event.setCancelled(true);
             return;
@@ -52,8 +54,23 @@ public class PlayerChatListener extends AbstractListener {
 
         String message = event.getMessage();
 
+        // anti spam
+        if (ChatConfig.isAntiSpamEnabled()
+            /*&& !user.hasPermission(ChatPermission.BYPASS_ANTISPAM.getPermission())*/) { // FIXME disabled for debug purposes
+            AntiSpam.CheckResult checkResult = AntiSpam.check(message, user);
+
+            if (checkResult.isBlockMessage()) {
+                user.sendMessage(checkResult.getMessage(), false);
+                event.setCancelled(true);
+                return;
+            }
+
+            message = AntiSpam.preventCaps(message);
+        }
+
         // filter message
-        if (ChatConfig.isFilterEnabled()) {
+        if (ChatConfig.isFilterEnabled()
+            /*&& !user.hasPermission(ChatPermission.BYPASS_FILTER.getPermission())*/) { // FIXME disabled for debug purposes
             try {
                 message = Chat2Go.getChatManager().filter(message);
             } catch (FilterException exception) { // filter matched, block message mode
@@ -74,6 +91,8 @@ public class PlayerChatListener extends AbstractListener {
                 return;
             }
         }
+
+        user.setLastMessage(message);
 
         // parse colors
         if (user.hasPermission(ChatPermission.CHAT_COLOR.getPermission())) {

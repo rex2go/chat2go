@@ -2,6 +2,9 @@ package eu.rex2go.chat2go;
 
 public enum ChatPermission {
 
+    BYPASS_FILTER,
+    BYPASS_MUTE,
+    BYPASS_ANTISPAM,
     COMMAND_MSG,
     CHAT_COLOR,
     CHAT_MENTION,
