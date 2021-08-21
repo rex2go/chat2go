@@ -5,8 +5,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -53,7 +51,7 @@ public class PlaceholderProcessor {
             String after = split[1];
 
             BaseComponent[] beforeComponents = TextComponent.fromLegacyText(before);
-            net.md_5.bungee.api.ChatColor chatColor = beforeComponents[beforeComponents.length-1].getColorRaw();
+            net.md_5.bungee.api.ChatColor chatColor = beforeComponents[beforeComponents.length - 1].getColorRaw();
 
             componentList.addAll(Arrays.asList(beforeComponents));
 
@@ -67,8 +65,8 @@ public class PlaceholderProcessor {
                 continue;
             }
 
-            if(chatColor != null) {
-                for(BaseComponent baseComponent : placeholderContent) {
+            if (chatColor != null) {
+                for (BaseComponent baseComponent : placeholderContent) {
                     baseComponent.setColor(chatColor);
                 }
             }

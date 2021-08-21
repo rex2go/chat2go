@@ -1,7 +1,6 @@
 package eu.rex2go.chat2go.translator;
 
 import eu.rex2go.chat2go.Chat2Go;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;

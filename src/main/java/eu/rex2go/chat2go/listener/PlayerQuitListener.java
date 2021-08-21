@@ -33,7 +33,7 @@ public class PlayerQuitListener extends AbstractListener {
         userManager.saveUser(user);
         userManager.getUsers().remove(user);
 
-        if(!ChatConfig.isChatQuitMessageShow()) {
+        if (!ChatConfig.isChatQuitMessageShow()) {
             event.setQuitMessage(null);
             return;
         }

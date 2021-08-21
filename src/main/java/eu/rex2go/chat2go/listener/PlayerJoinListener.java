@@ -7,7 +7,6 @@ import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
 import eu.rex2go.chat2go.user.User;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,7 +19,7 @@ public class PlayerJoinListener extends AbstractListener {
         Player player = event.getPlayer();
         User user = Chat2Go.getUserManager().loadUser(player.getUniqueId(), player.getName(), true);
 
-        if(!ChatConfig.isChatJoinMessageShow()) {
+        if (!ChatConfig.isChatJoinMessageShow()) {
             event.setJoinMessage(null);
             return;
         }

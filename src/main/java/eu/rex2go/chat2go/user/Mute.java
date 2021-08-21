@@ -9,16 +9,13 @@ public class Mute {
 
     @Getter
     private final long time;
-
+    @Getter
+    private final String reason;
+    @Getter
+    private final UUID muter;
     @Getter
     @Setter
     private long unmuteTime;
-
-    @Getter
-    private final String reason;
-
-    @Getter
-    private final UUID muter;
 
 
     public Mute(long time, long unmuteTime, String reason, UUID muter) {

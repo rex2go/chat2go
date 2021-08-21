@@ -22,8 +22,8 @@ public class BadWordFilter extends Filter {
     public List<String> filter(String message) {
         ArrayList<String> list = new ArrayList<>();
 
-        for(String badWord : badWords) {
-            if(message.toLowerCase().contains(badWord)) {
+        for (String badWord : badWords) {
+            if (message.toLowerCase().contains(badWord)) {
                 list.add(badWord);
             }
         }
