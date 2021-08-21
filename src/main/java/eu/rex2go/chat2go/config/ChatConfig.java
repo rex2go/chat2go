@@ -37,7 +37,25 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "chat.format.format")
     private static String chatFormatFormat;
 
-    // TODO
+    @Getter
+    @ConfigInfo(path = "chat.format.translateChatColors")
+    private static boolean chatFormatTranslateChatColors;
+
+    @Getter
+    @ConfigInfo(path = "chat.joinMessage.show")
+    private static boolean chatJoinMessageShow;
+
+    @Getter
+    @ConfigInfo(path = "chat.joinMessage.format")
+    private static String chatJoinMessageFormat;
+
+    @Getter
+    @ConfigInfo(path = "chat.quitMessage.show")
+    private static boolean chatQuitMessageShow;
+
+    @Getter
+    @ConfigInfo(path = "chat.quitMessage.format")
+    private static String chatQuitMessageFormat;
 
     @Getter
     @ConfigInfo(path = "chat.worldChat.enabled")

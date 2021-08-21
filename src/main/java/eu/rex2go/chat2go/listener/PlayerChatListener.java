@@ -95,7 +95,8 @@ public class PlayerChatListener extends AbstractListener {
         user.setLastMessage(message);
 
         // parse colors
-        if (user.hasPermission(ChatPermission.CHAT_COLOR.getPermission())) {
+        if (user.hasPermission(ChatPermission.CHAT_COLOR.getPermission())
+                && ChatConfig.isChatFormatTranslateChatColors()) {
             message = Chat2Go.parseColor(message);
         }
 
