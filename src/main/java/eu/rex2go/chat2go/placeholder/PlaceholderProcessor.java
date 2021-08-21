@@ -22,8 +22,7 @@ public class PlaceholderProcessor {
         if (Chat2Go.isPlaceholderInstalled()) {
             format = PlaceholderAPI.setPlaceholders(processor.getPlayer(), format);
             // translate colors of placeholder api stuff
-            format = ChatColor.translateAlternateColorCodes('&', format);
-            format = Chat2Go.parseHexColor(format);
+            format = Chat2Go.parseColor(format);
         }
 
         // placeholder regex, e.g. { prefix }, {suffix}

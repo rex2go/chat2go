@@ -48,6 +48,5 @@ format:
 notification:
   filter:
     enabled: true
-    sound: false
 
 version: 6

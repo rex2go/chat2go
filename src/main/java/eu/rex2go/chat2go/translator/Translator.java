@@ -45,8 +45,7 @@ public class Translator {
             }
         }
 
-        str = ChatColor.translateAlternateColorCodes('&', str);
-        str = Chat2Go.parseHexColor(str);
+        str = Chat2Go.parseColor(str);
 
         return str;
     }
@@ -65,6 +64,7 @@ public class Translator {
         addTranslation(Locale.EN, "command.chat.badword.list.no_bad_words", "&cNo bad words found. &7You can add one using /chat badword add <word>.");
 
         addTranslation(Locale.EN, "chat.cooldown", "&cChat is in slow mode. Please wait {0} seconds before sending a message.");
+        addTranslation(Locale.EN, "chat.disabled", "&7Chat is disabled.");
 
         addTranslation(Locale.EN, "chat.antispam.repeating", "&cYou are repeating yourself.");
         addTranslation(Locale.EN, "chat.antispam.suspicious", "&cYour message seems suspicious.");
@@ -79,6 +79,8 @@ public class Translator {
         addTranslation(Locale.EN, "pagination", "&7Page &b{0} &7of &b{1}");
         addTranslation(Locale.EN, "next_page", "Next page");
         addTranslation(Locale.EN, "previous_page", "Previous page");
+
+        addTranslation(Locale.EN, "chat.filter.blocked", "&cYour message containing \"{0}\" has been blocked.");
     }
 
     public void sendMessage(CommandSender sender, String message) {

@@ -3,24 +3,22 @@ package eu.rex2go.chat2go.listener;
 import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.ChatPermission;
 import eu.rex2go.chat2go.config.ChatConfig;
+import eu.rex2go.chat2go.exception.FilterException;
 import eu.rex2go.chat2go.placeholder.Placeholder;
 import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
 import eu.rex2go.chat2go.user.User;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -33,7 +31,7 @@ public class PlayerChatListener extends AbstractListener {
         Player player = event.getPlayer();
         User user = Chat2Go.getUser(player);
 
-        if(user == null) {
+        if (user == null) {
             event.setCancelled(true);
             player.sendMessage("§cError");
             return;
@@ -42,22 +40,54 @@ public class PlayerChatListener extends AbstractListener {
         // chat disabled
         if (!ChatConfig.isChatEnabled()) {
             event.setCancelled(true);
-            // TODO message player
+            user.sendMessage("chat.disabled", false);
             return;
         }
 
-        // TODO mute
+        if (user.isMuted()) {
+            // TODO send message
+            event.setCancelled(true);
+            return;
+        }
 
         String message = event.getMessage();
-        BaseComponent[] messageComponents = TextComponent.fromLegacyText(message); // TODO process message
 
+        // filter message
+        if (ChatConfig.isFilterEnabled()) {
+            try {
+                message = Chat2Go.getChatManager().filter(message);
+            } catch (FilterException exception) { // filter matched, block message mode
+                player.sendMessage(exception.getMessage());
+                event.setCancelled(true);
+
+                // staff notification
+                if (ChatConfig.isNotificationFilterEnabled()) {
+                    for (User staff : Chat2Go.getUserManager().getUsers()) {
+                        if (staff.getPlayer().hasPermission(ChatPermission.NOTIFY_FILTER.getPermission())) {
+                            staff.getPlayer().sendMessage(
+                                    Chat2Go.PREFIX + " " + Chat2Go.WARNING_PREFIX + " " + player.getName() + ": " + ChatColor.RED + message
+                            );
+                        }
+                    }
+                }
+
+                return;
+            }
+        }
+
+        // parse colors
+        if (user.hasPermission(ChatPermission.CHAT_COLOR.getPermission())) {
+            message = Chat2Go.parseColor(message);
+        }
+
+        BaseComponent[] messageComponents = TextComponent.fromLegacyText(message);
         String chatFormat = ChatConfig.getChatFormatFormat();
 
-        chatFormat = org.bukkit.ChatColor.translateAlternateColorCodes('&', chatFormat);
-        chatFormat = Chat2Go.parseHexColor(chatFormat);
+        chatFormat = Chat2Go.parseColor(chatFormat);
 
+        // add chatter name click event
         BaseComponent[] usernameComponents = TextComponent.fromLegacyText(player.getName());
-        for(BaseComponent usernameComponent : usernameComponents) {
+        for (BaseComponent usernameComponent : usernameComponents) {
             usernameComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + player.getName() + " "));
         }
 

@@ -1,5 +1,6 @@
 package eu.rex2go.chat2go;
 
+import eu.rex2go.chat2go.chat.ChatManager;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.database.DatabaseManager;
 import eu.rex2go.chat2go.listener.PlayerChatListener;
@@ -55,13 +56,18 @@ public class Chat2Go extends JavaPlugin {
     private static Chat chat;
 
     @Getter
+    private static ChatManager chatManager;
+
+    @Getter
     private static DatabaseManager databaseManager;
 
     @Getter
     private static UserManager userManager;
 
-    public static String parseHexColor(String str) {
-        String[] patterns = new String[]{"<#(.{6}?)>", "#\\((.{6}?)\\)", "&#(.{6}?)"};
+    public static String parseColor(String str) {
+        str = ChatColor.translateAlternateColorCodes('&', str);
+
+        String[] patterns = new String[]{"&#(.{6}?)"};
 
         for (String patternStr : patterns) {
             Pattern pattern = Pattern.compile(patternStr);
@@ -151,6 +157,7 @@ public class Chat2Go extends JavaPlugin {
     }
 
     private void setupManagers() {
+        chatManager = new ChatManager();
         userManager = new UserManager();
     }
 

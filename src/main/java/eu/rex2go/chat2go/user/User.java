@@ -50,8 +50,7 @@ public class User {
 
             if (prefix == null) return "";
 
-            prefix = Chat2Go.parseHexColor(prefix);
-            prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+            prefix = Chat2Go.parseColor(prefix);
 
             return prefix;
         }
@@ -65,8 +64,7 @@ public class User {
 
             if (suffix == null) return "";
 
-            suffix = Chat2Go.parseHexColor(suffix);
-            suffix = ChatColor.translateAlternateColorCodes('&', suffix);
+            suffix = Chat2Go.parseColor(suffix);
 
             return suffix;
         }
@@ -88,9 +86,14 @@ public class User {
     public void setMute(Mute mute) {
         this.mute = mute;
 
-        if (mute == null) return;
+        if (mute == null) {
+            unmute();
+            return;
+        }
 
         long diff = mute.getUnmuteTime() - System.currentTimeMillis();
+
+        // TODO update db
 
         if (mute.getReason() == null) {
             sendMessage("chat.you_have_been_muted", false, String.valueOf(diff));
@@ -101,7 +104,7 @@ public class User {
 
     public boolean isMuted() {
         if (mute != null && mute.getUnmuteTime() >= System.currentTimeMillis()) {
-            mute = null;
+            unmute();
         }
 
         return mute != null;
@@ -110,5 +113,10 @@ public class User {
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
         this.lastMessageTime = System.currentTimeMillis();
+    }
+
+    public void unmute() {
+        mute = null;
+        // TODO update db
     }
 }

@@ -53,6 +53,22 @@ public class ChatConfig extends RexConfig {
 
     // TODO
 
+    @Getter
+    @ConfigInfo(path = "filter.enabled")
+    private static boolean filterEnabled;
+
+    @Getter
+    @ConfigInfo(path = "filter.filterMode")
+    private static String filterFilterMode;
+
+    // TODO
+
+    @Getter
+    @ConfigInfo(path = "notification.filter.enabled")
+    private static boolean notificationFilterEnabled;
+
+    // TODO
+
     public ChatConfig() {
         super(Chat2Go.getInstance(), "config.yml", 6);
     }
