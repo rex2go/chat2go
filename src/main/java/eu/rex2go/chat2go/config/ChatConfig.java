@@ -107,6 +107,14 @@ public class ChatConfig extends RexConfig {
 
     // TODO
 
+    @Getter
+    @ConfigInfo(path = "format.privateMessage")
+    private static String formatPrivateMessage;
+
+    @Getter
+    @ConfigInfo(path = "format.broadcast")
+    private static String formatBroadcast;
+
     public ChatConfig() {
         super(Chat2Go.getInstance(), "config.yml", 6);
     }

@@ -15,13 +15,8 @@ public class ChatManager {
     private List<Filter> filters = new ArrayList<>();
 
     public ChatManager() {
-        if (true) { // TODO config check
-            filters.add(new BadWordFilter());
-        }
-
-        if (true) { // TODO config check
-            filters.add(new AdvertisementFilter());
-        }
+        filters.add(new BadWordFilter());
+        filters.add(new AdvertisementFilter());
     }
 
     public String filter(String message) throws FilterException {
