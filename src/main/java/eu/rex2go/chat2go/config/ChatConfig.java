@@ -76,6 +76,10 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "antiSpam.spaceThreshold")
     private static double antiSpamSpaceThreshold;
 
+    @Getter
+    @ConfigInfo(path = "antiSpam.maxCharRepetitions")
+    private static int antiSpamMaxCharRepetitions;
+
 
     // TODO
 

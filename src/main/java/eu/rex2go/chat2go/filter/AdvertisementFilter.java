@@ -12,7 +12,7 @@ public class AdvertisementFilter extends Filter {
     );
 
     private final Pattern domainRegex = Pattern.compile(
-            "([^ ]*\\.[^0-9]{2,4}\\b)"
+            "([^ ]*\\.[^0-9 ]{2,4}\\b)"
     );
 
     @Override

@@ -3,6 +3,7 @@ package eu.rex2go.chat2go.chat;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.user.User;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 public class AntiSpam {
 
@@ -21,13 +22,27 @@ public class AntiSpam {
 
         if (message.replace(" ", "").length() > 3) {
             double spaceCount = 0;
+            char lastChar = ' ';
+            int duplicates = 0;
 
             for (int i = 0; i < message.length(); i++) {
                 char c = message.charAt(i);
 
+                if(c == lastChar) {
+                    duplicates++;
+
+                    if(duplicates >= ChatConfig.getAntiSpamMaxCharRepetitions()) {
+                        return CheckResult.SUSPICIOUS;
+                    }
+                } else {
+                    duplicates = 0;
+                }
+
                 if (Character.isSpaceChar(c)) {
                     spaceCount++;
                 }
+
+                lastChar = c;
             }
 
             if (spaceCount / message.length() > ChatConfig.getAntiSpamSpaceThreshold()) {

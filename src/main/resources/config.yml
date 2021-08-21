@@ -40,6 +40,7 @@ antiSpam:
   enabled: true
   capsThreshold: 0.5
   spaceThreshold: 0.3
+  maxCharRepetitions: 3
 
 format:
   privateMessage: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
