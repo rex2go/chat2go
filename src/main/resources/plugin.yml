@@ -1,0 +1,43 @@
+name: chat2go
+version: 1.0
+author: rex2go
+description: chat2go is an easy to use chat management plugin
+
+softdepend:
+  - Vault
+  - PlaceholderAPI
+loadbefore:
+  - Vault
+  - PlaceholderAPI
+
+main: eu.rex2go.chat2go.Chat2Go
+api-version: 1.16
+
+commands:
+  msg:
+    description: Send a private message
+    usage: "§cUsage: /<command> <player> <message>"
+    permission: chat2go.command.msg
+    aliases:
+      - tell
+  chat:
+    usage: "§cUsage: /<command>"
+    permission: chat2go.command.chat
+    aliases:
+      - chat2go
+  reply:
+    description: Reply to a private message
+    usage: "§cUsage: /<command> <message>"
+    permission: chat2go.command.msg
+    aliases:
+      - r
+  mute:
+    description: Mute a player
+    usage: "§cUsage: /<command> <player>"
+    permission: chat2go.command.mute
+  broadcast:
+    description: Broadcasts a message
+    usage: "§cUsage: /<command> <message>"
+    permission: chat2go.command.broadcast
+    aliases:
+      - bcast
