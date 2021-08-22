@@ -67,6 +67,10 @@ public class PlaceholderProcessor {
 
             if (chatColor != null) {
                 for (BaseComponent baseComponent : placeholderContent) {
+                    if(baseComponent.getColorRaw() != null) {
+                        chatColor = baseComponent.getColorRaw();
+                    }
+
                     baseComponent.setColor(chatColor);
                 }
             }

@@ -7,6 +7,7 @@ import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.exception.FilterException;
 import eu.rex2go.chat2go.placeholder.Placeholder;
 import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
+import eu.rex2go.chat2go.user.Mute;
 import eu.rex2go.chat2go.user.User;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -47,7 +48,15 @@ public class PlayerChatListener extends AbstractListener {
 
         if (user.isMuted()
             /*&& !user.hasPermission(ChatPermission.BYPASS_MUTE.getPermission())*/) { // FIXME disabled for debug purposes
-            // TODO send message
+            Mute mute = user.getMute();
+            int seconds = (int) (mute.getUnmuteTime() - System.currentTimeMillis() / 1000);
+
+            if(mute.getReason() != null) {
+                user.sendMessage("chat.you_have_been_muted_reason", false, mute.getRemainingTimeString(), mute.getReason());
+            } else {
+                user.sendMessage("chat.you_have_been_muted", false, mute.getRemainingTimeString());
+            }
+
             event.setCancelled(true);
             return;
         }

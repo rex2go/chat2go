@@ -9,6 +9,11 @@ public enum ChatPermission {
     CHAT_MENTION,
     COMMAND_BROADCAST,
     COMMAND_MSG,
+    COMMAND_CHAT,
+    COMMAND_CHAT_RELOAD,
+    COMMAND_CHAT_CLEAR,
+    COMMAND_CHAT_BADWORD,
+    COMMAND_MUTE,
     NOTIFY_FILTER;
 
     public String getPermission() {

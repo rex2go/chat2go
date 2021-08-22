@@ -1,5 +1,6 @@
 package eu.rex2go.chat2go.command.reply;
 
+import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.ChatPermission;
 import eu.rex2go.chat2go.command.WrappedCommandExecutor;
 import eu.rex2go.chat2go.command.exception.CustomErrorCommandException;
@@ -53,6 +54,8 @@ public class ReplyCommand extends WrappedCommandExecutor {
         target.setLastChatter(user);
 
         String format = ChatConfig.getFormatPrivateMessage();
+
+        format = Chat2Go.parseColor(format);
 
         format = format.replace("{sender}", sender.getName());
         format = format.replace("{receiver}", target.getName());

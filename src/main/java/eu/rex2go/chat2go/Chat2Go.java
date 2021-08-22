@@ -2,7 +2,9 @@ package eu.rex2go.chat2go;
 
 import eu.rex2go.chat2go.chat.ChatManager;
 import eu.rex2go.chat2go.command.broadcast.BroadcastCommand;
+import eu.rex2go.chat2go.command.chat.ChatCommand;
 import eu.rex2go.chat2go.command.msg.MsgCommand;
+import eu.rex2go.chat2go.command.mute.MuteCommand;
 import eu.rex2go.chat2go.command.reply.ReplyCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.database.DatabaseManager;
@@ -162,7 +164,9 @@ public class Chat2Go extends JavaPlugin {
 
     private void setupCommands() {
         new BroadcastCommand();
+        new ChatCommand();
         new MsgCommand();
+        new MuteCommand();
         new ReplyCommand();
     }
 

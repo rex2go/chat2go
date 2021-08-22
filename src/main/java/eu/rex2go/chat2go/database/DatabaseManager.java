@@ -2,11 +2,16 @@ package eu.rex2go.chat2go.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import eu.rex2go.chat2go.Chat2Go;
 import lombok.Getter;
 
+import javax.annotation.Nullable;
 import java.io.File;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 @Getter
 public class DatabaseManager {
@@ -82,5 +87,23 @@ public class DatabaseManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static @Nullable
+    ConnectionWrapper getConnectionWrapper() {
+        DatabaseManager databaseManager = Chat2Go.getDatabaseManager();
+        ConnectionWrapper connectionWrapper = null;
+
+        try {
+            Connection connection = databaseManager.getDataSource().getConnection();
+            connectionWrapper = new ConnectionWrapper(connection);
+        } catch (SQLException exception) {
+            Chat2Go.getInstance().getLogger().log(
+                    Level.SEVERE,
+                    "Could not connect to database: " + exception.getMessage()
+            );
+        }
+
+        return connectionWrapper;
     }
 }

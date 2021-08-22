@@ -1,11 +1,15 @@
 package eu.rex2go.chat2go.user;
 
 import eu.rex2go.chat2go.Chat2Go;
+import eu.rex2go.chat2go.database.ConnectionWrapper;
+import eu.rex2go.chat2go.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -33,6 +37,14 @@ public class User {
     public User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
+
+        // load mute
+        ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();
+        if(connectionWrapper == null) return;
+
+        this.mute = Chat2Go.getUserManager().loadMute(this, connectionWrapper.getConnection());
+
+        connectionWrapper.close();
     }
 
     public User(Player player) {
@@ -90,19 +102,36 @@ public class User {
             return;
         }
 
-        long diff = mute.getUnmuteTime() - System.currentTimeMillis();
+        long seconds = (mute.getUnmuteTime() - mute.getTime()) / 1000;
 
-        // TODO update db
+        ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();
+        PreparedStatement preparedStatement = connectionWrapper.prepareStatement(
+                "REPLACE INTO `mute` VALUES (?, ?, ?, ?, ?)");
+
+        try {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setLong(2, mute.getTime());
+            preparedStatement.setLong(3, mute.getUnmuteTime());
+            preparedStatement.setString(4, mute.getReason());
+            preparedStatement.setString(5, mute.getMuter().toString());
+
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        connectionWrapper.close();
 
         if (mute.getReason() == null) {
-            sendMessage("chat.you_have_been_muted", false, String.valueOf(diff));
+            sendMessage("chat.you_have_been_muted", false, mute.getRemainingTimeString());
         } else {
-            sendMessage("chat.you_have_been_muted_message", false, String.valueOf(diff), mute.getReason());
+            sendMessage("chat.you_have_been_muted_reason", false, mute.getRemainingTimeString(), mute.getReason());
         }
     }
 
     public boolean isMuted() {
-        if (mute != null && mute.getUnmuteTime() >= System.currentTimeMillis()) {
+        if (mute != null && mute.getUnmuteTime() <= System.currentTimeMillis()) {
             unmute();
         }
 
@@ -116,6 +145,20 @@ public class User {
 
     public void unmute() {
         mute = null;
-        // TODO update db
+
+        ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();
+        PreparedStatement preparedStatement = connectionWrapper.prepareStatement(
+                "DELETE FROM `mute` WHERE user_uuid = ?");
+
+        try {
+            preparedStatement.setString(1, uuid.toString());
+
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        connectionWrapper.close();
     }
 }

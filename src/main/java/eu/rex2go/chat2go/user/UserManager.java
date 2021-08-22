@@ -139,10 +139,12 @@ public class UserManager {
     }
 
     public void saveUser(User user, Connection connection) {
-        saveMute(user, connection);
+        // TODO
     }
 
-    private void loadMute(User user, Connection connection) {
+    public Mute loadMute(User user, Connection connection) {
+        Mute mute = null;
+
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM `mute` WHERE `user_uuid` = ?");
             ps.setString(1, user.getUuid().toString());
@@ -156,9 +158,7 @@ public class UserManager {
                 String reason = rs.getString("reason");
                 UUID muter = UUID.fromString(rs.getString("muter_uuid"));
 
-                Mute mute = new Mute(time, unmuteTime, reason, muter);
-
-                user.setMute(mute);
+                mute = new Mute(time, unmuteTime, reason, muter);
             }
 
             rs.close();
@@ -167,38 +167,8 @@ public class UserManager {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
 
-    private void saveMute(User user, Connection connection) {
-        if (user.getMute() == null) return;
-
-        Mute mute = user.getMute();
-
-        try {
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM `mute` WHERE user_uuid = ?");
-            ps.setString(1, user.getUuid().toString());
-
-            ps.execute();
-            ps.close();
-
-            ps = connection.prepareStatement(
-                    "INSERT INTO `mute` (user_uuid, 'time', unmuteTime, reason, muter_uuid) " +
-                            "VALUES (?, ?, ?, ?, ?)"
-            );
-
-            ps.setString(1, user.getUuid().toString());
-            ps.setLong(2, mute.getTime());
-            ps.setLong(3, mute.getUnmuteTime());
-            ps.setString(4, mute.getReason());
-            ps.setString(5, mute.getMuter().toString());
-
-            ps.execute();
-
-            ps.close();
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        return mute;
     }
 
     private void loadStatistics(User user, Connection connection) {

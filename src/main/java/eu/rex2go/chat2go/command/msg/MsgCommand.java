@@ -58,6 +58,8 @@ public class MsgCommand extends WrappedCommandExecutor {
 
         String format = ChatConfig.getFormatPrivateMessage();
 
+        format = Chat2Go.parseColor(format);
+
         format = format.replace("{sender}", sender.getName());
         format = format.replace("{receiver}", target.getName());
         format = format.replace("{message}", message);

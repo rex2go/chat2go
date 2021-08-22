@@ -54,6 +54,8 @@ public class Translator {
     }
 
     private void setupTranslations() {
+        addTranslation(Locale.EN, "command.no_permission", "&cYou are not permitted to execute this command.");
+
         addTranslation(Locale.EN, "command.chat.type_help", "&7Type \"/chat help\" for help");
 
         addTranslation(Locale.EN, "command.chat.reload.reloading", "&7Reloading {0}..");
@@ -61,6 +63,13 @@ public class Translator {
 
         addTranslation(Locale.EN, "command.chat.badword.list.delete_hover", "Delete \"{0}\"");
         addTranslation(Locale.EN, "command.chat.badword.list.no_bad_words", "&cNo bad words found. &7You can add one using /chat badword add <word>.");
+        addTranslation(Locale.EN, "command.chat.badword.add.success", "&aSuccessfully &7added &c\"{0}\" &7to bad words.");
+        addTranslation(Locale.EN, "command.chat.badword.add.error", "&cCould not add \"{0}\" to bad words! Is it a duplicate?");
+        addTranslation(Locale.EN, "command.chat.badword.remove.success", "&aSuccessfully &7removed &c\"{0}\" &7from bad words.");
+        addTranslation(Locale.EN, "command.chat.badword.remove.error", "&cCould not remove \"{0}\" from bad words! Is it in the list?");
+
+        addTranslation(Locale.EN, "command.message.message_yourself", "&cYou can't message yourself.");
+        addTranslation(Locale.EN, "command.message.no_player_to_reply_to", "&cNo player to reply to.");
 
         addTranslation(Locale.EN, "chat.cooldown", "&cChat is in slow mode. Please wait {0} seconds before sending a message.");
         addTranslation(Locale.EN, "chat.disabled", "&7Chat is disabled.");
@@ -69,11 +78,18 @@ public class Translator {
         addTranslation(Locale.EN, "chat.antispam.suspicious", "&cYour message seems suspicious.");
         addTranslation(Locale.EN, "chat.antispam.too_fast", "&cYou are chatting too fast.");
 
-        addTranslation(Locale.EN, "chat.you_have_been_muted", "&eYou have been muted for {0}");
-        addTranslation(Locale.EN, "chat.you_have_been_muted_message", "&eYou have been muted for {0}: {1}");
+        addTranslation(Locale.EN, "command.mute.muted", "&7You muted &f{0} &7for &f{1}&7.");
+        addTranslation(Locale.EN, "command.mute.muted_reason", "&7You muted &f{0} &7for &f{1}&7. &cReason: {2}");
+
+        addTranslation(Locale.EN, "chat.you_have_been_muted", "&eYou have been muted for {0}.");
+        addTranslation(Locale.EN, "chat.you_have_been_muted_reason", "&eYou have been muted for {0}: {1}");
 
         addTranslation(Locale.EN, "bad_words", "Bad words");
         addTranslation(Locale.EN, "delete", "delete");
+
+        addTranslation(Locale.EN, "player", "player");
+        addTranslation(Locale.EN, "time", "time");
+        addTranslation(Locale.EN, "reason", "reason");
 
         addTranslation(Locale.EN, "pagination", "&7Page &b{0} &7of &b{1}");
         addTranslation(Locale.EN, "next_page", "Next page");
