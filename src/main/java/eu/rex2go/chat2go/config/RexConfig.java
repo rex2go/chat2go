@@ -77,8 +77,6 @@ public abstract class RexConfig {
         }
     }
 
-    ;
-
     public void reload() {
         this.file = new File(plugin.getDataFolder() + File.separator + fileName);
 
@@ -87,6 +85,8 @@ public abstract class RexConfig {
         }
 
         this.config = YamlConfiguration.loadConfiguration(file);
+
+        load();
     }
 
     @Target({ElementType.FIELD})

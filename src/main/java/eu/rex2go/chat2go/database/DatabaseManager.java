@@ -42,6 +42,24 @@ public class DatabaseManager {
         this.initMySQLHikari();
     }
 
+    public static @Nullable
+    ConnectionWrapper getConnectionWrapper() {
+        DatabaseManager databaseManager = Chat2Go.getDatabaseManager();
+        ConnectionWrapper connectionWrapper = null;
+
+        try {
+            Connection connection = databaseManager.getDataSource().getConnection();
+            connectionWrapper = new ConnectionWrapper(connection);
+        } catch (SQLException exception) {
+            Chat2Go.getInstance().getLogger().log(
+                    Level.SEVERE,
+                    "Could not connect to database: " + exception.getMessage()
+            );
+        }
+
+        return connectionWrapper;
+    }
+
     private void initSQLiteHikari() {
         config = new HikariConfig();
         config.setJdbcUrl("jdbc:sqlite:" + file.getAbsolutePath());
@@ -87,23 +105,5 @@ public class DatabaseManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static @Nullable
-    ConnectionWrapper getConnectionWrapper() {
-        DatabaseManager databaseManager = Chat2Go.getDatabaseManager();
-        ConnectionWrapper connectionWrapper = null;
-
-        try {
-            Connection connection = databaseManager.getDataSource().getConnection();
-            connectionWrapper = new ConnectionWrapper(connection);
-        } catch (SQLException exception) {
-            Chat2Go.getInstance().getLogger().log(
-                    Level.SEVERE,
-                    "Could not connect to database: " + exception.getMessage()
-            );
-        }
-
-        return connectionWrapper;
     }
 }

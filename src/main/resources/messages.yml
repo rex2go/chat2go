@@ -1,0 +1,56 @@
+bad_words: "Bad words"
+delete: "delete"
+player: "player"
+time: "time"
+reason: "reason"
+
+pagination: "&7Page &b{0} &7of &b{1}"
+next_page: "Next page"
+previous_page: "Previous page"
+
+chat:
+  disabled: "&7Chat is disabled."
+
+  antispam:
+    repeating: "&cYou are repeating yourself."
+    suspicious: "&cYour message seems suspicious."
+    too_fast: "&cYou are chatting too fast."
+
+  you_have_been_muted: "&7You have been muted for &f{0}&7."
+  you_have_been_muted_reason: "&7You have been muted for &f{0}&7. &cReason: {1}"
+
+  filter:
+    blocked: "&cYour message containing \"{0}\" has been blocked."
+
+command:
+  no_permission: "&cYou are not permitted to execute this command."
+
+  chat:
+    type_help: "&7Type \"/chat help\" for help"
+
+    reload:
+      reloading: "&7Reloading {0}.."
+      reloaded: "&a{0} has been reloaded."
+
+    badword:
+      list:
+        delete_hover: "Delete \"{0}\""
+        no_bad_words: "&cNo bad words found. &7You can add one using /chat badword add <word>."
+      add:
+        success: "&aSuccessfully &7added &c\"{0}\" &7to bad words."
+        error: "&cCould not add \"{0}\" to bad words! Is it a duplicate?"
+      remove:
+        success: "&aSuccessfully &7removed &c\"{0}\" &7from bad words."
+        error: "&cCould not remove \"{0}\" from bad words! Is it in the list?"
+
+  message:
+    message_yourself: "&cYou can't message yourself."
+    no_player_to_reply_to: "&cNo player to reply to."
+
+  mute:
+    muted: "&7You muted &f{0} &7for &f{1}&7."
+    muted_reason: "&7You muted &f{0} &7for &f{1}&7. &cReason: {2}"
+
+
+# do not touch
+version: 1

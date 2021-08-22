@@ -7,16 +7,17 @@ import eu.rex2go.chat2go.command.msg.MsgCommand;
 import eu.rex2go.chat2go.command.mute.MuteCommand;
 import eu.rex2go.chat2go.command.reply.ReplyCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
+import eu.rex2go.chat2go.config.MessageConfig;
 import eu.rex2go.chat2go.database.DatabaseManager;
 import eu.rex2go.chat2go.listener.PlayerChatListener;
 import eu.rex2go.chat2go.listener.PlayerJoinListener;
 import eu.rex2go.chat2go.listener.PlayerQuitListener;
-import eu.rex2go.chat2go.translator.Locale;
 import eu.rex2go.chat2go.translator.Translator;
 import eu.rex2go.chat2go.user.User;
 import eu.rex2go.chat2go.user.UserManager;
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -50,6 +51,9 @@ public class Chat2Go extends JavaPlugin {
 
     @Getter
     private static Translator translator;
+
+    @Getter
+    private static MessageConfig messageConfig;
 
     @Getter
     private static boolean vaultInstalled;
@@ -110,8 +114,12 @@ public class Chat2Go extends JavaPlugin {
         chatConfig = new ChatConfig();
         chatConfig.load();
 
-        // setup translator TODO locale from config
-        translator = new Translator(Locale.EN);
+        // setup translator
+        translator = new Translator();
+
+        // setup message config
+        messageConfig = new MessageConfig();
+        messageConfig.load();
 
         checkDependencies();
 
@@ -121,6 +129,10 @@ public class Chat2Go extends JavaPlugin {
         setupCommands();
 
         registerListener();
+
+        if (ChatConfig.isGeneralStatisticsAllowed()) {
+            new Metrics(this, 8164);
+        }
     }
 
     private void checkDependencies() {

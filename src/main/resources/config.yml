@@ -1,53 +1,151 @@
+# --- notes ---
+
+# 1.  chat2go uses curly brackets ({}) to imply placeholders
+# 2.  spaces inside curly brackets are "optional spaces"
+#     meaning they will only appear if the placeholder won't
+#     be empty (see chat.format.format for example usage)
+# 3.  PlaceholderAPI is mostly supported and uses the default
+#     placeholder format using % (e.g. %player_name%)
+
+
+# --- general settings --- #
+
 general:
+  # description: bStats will collect anonymous statistics of this server
   statisticsAllowed: true
 
+
+# --- database --- #
+
 database:
+  # description: if set to false a local sqllite file is used
   useMySQL: false
   host:
   port: 3306
   user:
   password:
 
+
+# --- chat --- #
+
 chat:
+  # description: if set to false chatting will be disabled
   enabled: true
 
   format:
+    # description: set the format
+    # chat2go placeholders:
+    # - {prefix}
+    # - (suffix}
+    # - {username}
+    # - (message}
+    # - {world}
+    # PlaceholderAPI is supported
     format: "{prefix }&7{username}{ suffix}&8 > &f{message}"
+
+    # description: enables colored chatting, in 1.16+ hex colors are supported
+    # permission: chat2go.chat.color
+    # example: &6 turns golden
+    # example (1.16+): &#ff0000 turns red
     translateChatColors: true
 
   joinMessage:
+    # description: if set to false a join message won't displayed
     show: true
+
+    # description: custom join message format
+    # chat2go placeholders:
+    # - {prefix}
+    # - (suffix}
+    # - {username}
+    # PlaceholderAPI is supported
     format: "&7[&a+&7] &7{username}"
 
   quitMessage:
+    # description: if set to false a quit message won't displayed
     show: true
+
+    # description: custom leave message format
+    # chat2go placeholders:
+    # - {prefix}
+    # - (suffix}
+    # - {username}
+    # PlaceholderAPI is supported
     format: "&7[&c-&7] &7{username}"
 
-  # may break some plugins
+  # description: per world chat
+  # warning: may break some plugins
   worldChat:
+    # description: enable world chat
     enabled: false
+
+    # description: whether a ranged chat should be used
     considerRange: false
+
+    # description: max message range
     range: 50
 
+
+# --- filter --- #
+
 filter:
+  # description: if set to true messages will be filtered for advertisement and bad words
   enabled: true
+
+  # description: if chat filtering is enabled, the message containing a bad word will either be completely blocked or censored
+  # possible values: [BLOCK, CENSOR]
   filterMode: BLOCK
-  # TODO implement
+
+  # description: regex enabled whitelist
   whitelist:
-    - rex2go.eu
+    - rex2go.eu # example
+
+
+# --- anti spam --- #
 
 antiSpam:
+  # description: if enabled it will try its best to prevent chat spamming
   enabled: true
+
+  # description: threshold of caps lock detection
   capsThreshold: 0.5
+
+  # description: threshold of spacing detection
   spaceThreshold: 0.3
+
+  # description: max repetitions of a character
   maxCharRepetitions: 3
 
+
+# --- format --- #
+
 format:
+  # description: format of /msg
   privateMessage: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
+
+  # description: format of /broadcast
   broadcast: "&f[&cBroadcast&f] {message}"
 
 notification:
   filter:
+    # description: notify staff when filter is blocking a message
     enabled: true
 
+
+# --- custom text --- #
+
+customComponents:
+  # warning: may break some plugins
+  enabled: false
+
+  components:
+    usernameComponent: # you can now use {usernameComponent} instead of {username} in the format
+      text: "{username}"
+      hoverText: "Send a private message to {username}"
+      suggestCommand: "/msg {username} "
+
+
+# --- do not touch --- #
+
+# description: config version
 version: 6

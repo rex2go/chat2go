@@ -1,6 +1,7 @@
 package eu.rex2go.chat2go.placeholder;
 
 import eu.rex2go.chat2go.Chat2Go;
+import eu.rex2go.chat2go.config.ChatConfig;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -27,6 +28,7 @@ public class PlaceholderProcessor {
         Pattern pattern = Pattern.compile("\\{( *)(.*?)( *)}");
         Matcher matcher = pattern.matcher(format);
         List<BaseComponent> componentList = new ArrayList<>();
+        String remainder = "";
 
         while (matcher.find()) {
             String match = matcher.group(0);
@@ -45,10 +47,17 @@ public class PlaceholderProcessor {
                 }
             }
 
+            // custom components
+            if (ChatConfig.isCustomComponentsEnabled()
+                    && placeholderContent.length == 0
+                    && ChatConfig.getCustomComponents().containsKey(placeholderKey)) {
+                placeholderContent = ChatConfig.getCustomComponents().get(placeholderKey).build(processor.getPlayer(), placeholders);
+            }
+
             // split up into components, escape { because of regex errors
             String[] split = format.split(match.replace("{", "\\{"), 2);
             String before = split[0];
-            String after = split[1];
+            remainder = split[1];
 
             BaseComponent[] beforeComponents = TextComponent.fromLegacyText(before);
             net.md_5.bungee.api.ChatColor chatColor = beforeComponents[beforeComponents.length - 1].getColorRaw();
@@ -56,7 +65,7 @@ public class PlaceholderProcessor {
             componentList.addAll(Arrays.asList(beforeComponents));
 
             // remaining unprocessed text
-            format = after;
+            format = remainder;
 
             // cleanup empty curly braces e.g. { }
             if (placeholderContent.length == 0
@@ -67,7 +76,7 @@ public class PlaceholderProcessor {
 
             if (chatColor != null) {
                 for (BaseComponent baseComponent : placeholderContent) {
-                    if(baseComponent.getColorRaw() != null) {
+                    if (baseComponent.getColorRaw() != null) {
                         chatColor = baseComponent.getColorRaw();
                     }
 
@@ -82,6 +91,8 @@ public class PlaceholderProcessor {
 
             componentList.addAll(Arrays.asList(components));
         }
+
+        componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
 
         return componentList.toArray(new BaseComponent[0]);
     }

@@ -1,7 +1,6 @@
 package eu.rex2go.chat2go.command;
 
 import eu.rex2go.chat2go.Chat2Go;
-import eu.rex2go.chat2go.translator.Translator;
 import eu.rex2go.chat2go.user.User;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -10,9 +9,9 @@ import org.bukkit.entity.Player;
 
 public abstract class WrappedCommandExecutor extends BaseCommand implements CommandExecutor {
 
+    private final String command;
     @Getter
     protected PluginCommand pluginCommand;
-    private final String command;
 
     public WrappedCommandExecutor(String command, TabCompleter tabCompleter) {
         this.command = command;
@@ -37,7 +36,7 @@ public abstract class WrappedCommandExecutor extends BaseCommand implements Comm
             User user = null;
 
             if (sender instanceof Player) {
-               user = Chat2Go.getUserManager().getUser((Player) sender);
+                user = Chat2Go.getUserManager().getUser((Player) sender);
             }
 
             try {

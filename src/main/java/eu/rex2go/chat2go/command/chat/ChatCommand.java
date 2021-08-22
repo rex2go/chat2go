@@ -35,11 +35,11 @@ public class ChatCommand extends WrappedCommandExecutor {
 
         String subCommand = args[0];
 
-        if(subCommand.equalsIgnoreCase("reload")) {
+        if (subCommand.equalsIgnoreCase("reload")) {
             chatReloadSubCommand.execute(sender, user, label, args);
-        } else if(subCommand.equalsIgnoreCase("clear")) {
+        } else if (subCommand.equalsIgnoreCase("clear")) {
             chatClearSubCommand.execute(sender, user, label, args);
-        } else if(subCommand.equalsIgnoreCase("badword")) {
+        } else if (subCommand.equalsIgnoreCase("badword")) {
             chatBadWordSubCommand.execute(sender, user, label, args);
         }
     }

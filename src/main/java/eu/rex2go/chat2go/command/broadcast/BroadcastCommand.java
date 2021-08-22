@@ -19,7 +19,7 @@ public class BroadcastCommand extends WrappedCommandExecutor {
     protected void execute(CommandSender sender, User user, String label, String... args) throws
             NoPermissionCommandException {
 
-        checkPermission(sender, ChatPermission.CHAT_MENTION.getPermission());
+        checkPermission(sender, ChatPermission.COMMAND_BROADCAST.getPermission());
 
         if (args.length < 1) {
             getTranslator().sendMessage(sender, "§7/broadcast <{message}>");

@@ -8,7 +8,6 @@ import eu.rex2go.chat2go.command.exception.PlayerNotFoundCommandException;
 import eu.rex2go.chat2go.user.Mute;
 import eu.rex2go.chat2go.user.User;
 import eu.rex2go.chat2go.util.MathUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class MuteCommand extends WrappedCommandExecutor {
@@ -30,7 +29,7 @@ public class MuteCommand extends WrappedCommandExecutor {
         String targetName = args[0];
         User target = Chat2Go.getUserManager().loadUser(null, targetName, false);
 
-        if(target == null) {
+        if (target == null) {
             throw new PlayerNotFoundCommandException(targetName);
         }
 
@@ -42,7 +41,7 @@ public class MuteCommand extends WrappedCommandExecutor {
         long unmuteTime = time + ms;
 
         // Build message, skip username (first argument)
-        if(args.length > 2) {
+        if (args.length > 2) {
             StringBuilder messageBuilder = new StringBuilder();
             for (int i = 2; i < args.length; i++) {
                 messageBuilder.append(args[i]).append(" ");
@@ -56,7 +55,7 @@ public class MuteCommand extends WrappedCommandExecutor {
 
         target.setMute(mute);
 
-        if(mute.getReason() != null) {
+        if (mute.getReason() != null) {
             user.sendMessage("command.mute.muted_reason", false, target.getName(), mute.getRemainingTimeString(), mute.getReason());
         } else {
             user.sendMessage("command.mute.muted", false, target.getName(), mute.getRemainingTimeString());

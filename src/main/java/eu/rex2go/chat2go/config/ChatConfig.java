@@ -1,7 +1,14 @@
 package eu.rex2go.chat2go.config;
 
 import eu.rex2go.chat2go.Chat2Go;
+import eu.rex2go.chat2go.customcomponent.CustomComponent;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ChatConfig extends RexConfig {
 
@@ -69,8 +76,6 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "chat.worldChat.range")
     private static int chatWorldChatRange;
 
-    // TODO
-
     @Getter
     @ConfigInfo(path = "filter.enabled")
     private static boolean filterEnabled;
@@ -79,8 +84,8 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "filter.filterMode")
     private static String filterFilterMode;
 
-
-    // anti spam
+    @Getter
+    private static List<Pattern> filterWhitelist;
 
     @Getter
     @ConfigInfo(path = "antiSpam.enabled")
@@ -98,14 +103,9 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "antiSpam.maxCharRepetitions")
     private static int antiSpamMaxCharRepetitions;
 
-
-    // TODO
-
     @Getter
     @ConfigInfo(path = "notification.filter.enabled")
     private static boolean notificationFilterEnabled;
-
-    // TODO
 
     @Getter
     @ConfigInfo(path = "format.privateMessage")
@@ -115,11 +115,51 @@ public class ChatConfig extends RexConfig {
     @ConfigInfo(path = "format.broadcast")
     private static String formatBroadcast;
 
+    @Getter
+    @ConfigInfo(path = "customComponents.enabled")
+    private static boolean customComponentsEnabled;
+
+    @Getter
+    private static Map<String, CustomComponent> customComponents;
+
     public ChatConfig() {
         super(Chat2Go.getInstance(), "config.yml", 6);
     }
 
     public static boolean useCompatibilityMode() {
-        return !(chatWorldChatEnabled);
+        return !(chatWorldChatEnabled || customComponentsEnabled);
+    }
+
+    @Override
+    public void load() {
+        super.load();
+
+        filterWhitelist = new ArrayList<>();
+
+        List<String> patterns = getConfig().getStringList("filter.whitelist");
+
+        for (String pattern : patterns) {
+            filterWhitelist.add(Pattern.compile(pattern));
+        }
+
+        customComponents = new HashMap<>();
+
+        if (customComponentsEnabled) {
+            getConfig().getConfigurationSection("customComponents.components").getKeys(false).forEach(id -> {
+                String text = getConfig().getString("customComponents.components." + id + ".text");
+                String hoverText = getConfig().getString("customComponents.components." + id + ".hoverText");
+                String suggestCommand = getConfig().getString("customComponents.components." + id + ".suggestCommand");
+                String runCommand = getConfig().getString("customComponents.components." + id + ".runCommand");
+                String openUrl = getConfig().getString("customComponents.components." + id + ".openUrl");
+
+                CustomComponent customComponent = new CustomComponent(text);
+                customComponent.setHoverText(hoverText);
+                customComponent.setSuggestCommand(suggestCommand);
+                customComponent.setRunCommand(runCommand);
+                customComponent.setOpenUrl(openUrl);
+
+                customComponents.put(id, customComponent);
+            });
+        }
     }
 }

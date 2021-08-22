@@ -10,7 +10,6 @@ import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
 import eu.rex2go.chat2go.user.Mute;
 import eu.rex2go.chat2go.user.User;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -47,11 +46,10 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         if (user.isMuted()
-            /*&& !user.hasPermission(ChatPermission.BYPASS_MUTE.getPermission())*/) { // FIXME disabled for debug purposes
+                && !user.hasPermission(ChatPermission.BYPASS_MUTE.getPermission())) {
             Mute mute = user.getMute();
-            int seconds = (int) (mute.getUnmuteTime() - System.currentTimeMillis() / 1000);
 
-            if(mute.getReason() != null) {
+            if (mute.getReason() != null) {
                 user.sendMessage("chat.you_have_been_muted_reason", false, mute.getRemainingTimeString(), mute.getReason());
             } else {
                 user.sendMessage("chat.you_have_been_muted", false, mute.getRemainingTimeString());
@@ -65,7 +63,7 @@ public class PlayerChatListener extends AbstractListener {
 
         // anti spam
         if (ChatConfig.isAntiSpamEnabled()
-            /*&& !user.hasPermission(ChatPermission.BYPASS_ANTISPAM.getPermission())*/) { // FIXME disabled for debug purposes
+                && !user.hasPermission(ChatPermission.BYPASS_ANTISPAM.getPermission())) {
             AntiSpam.CheckResult checkResult = AntiSpam.check(message, user);
 
             if (checkResult.isBlockMessage()) {
@@ -79,7 +77,7 @@ public class PlayerChatListener extends AbstractListener {
 
         // filter message
         if (ChatConfig.isFilterEnabled()
-            /*&& !user.hasPermission(ChatPermission.BYPASS_FILTER.getPermission())*/) { // FIXME disabled for debug purposes
+                && !user.hasPermission(ChatPermission.BYPASS_FILTER.getPermission())) {
             try {
                 message = Chat2Go.getChatManager().filter(message);
             } catch (FilterException exception) { // filter matched, block message mode
@@ -114,16 +112,11 @@ public class PlayerChatListener extends AbstractListener {
 
         chatFormat = Chat2Go.parseColor(chatFormat);
 
-        // add chatter name click event
-        BaseComponent[] usernameComponents = TextComponent.fromLegacyText(player.getName());
-        for (BaseComponent usernameComponent : usernameComponents) {
-            usernameComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + player.getName() + " "));
-        }
-
-        Placeholder usernamePlaceholder = new Placeholder("username", usernameComponents);
+        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(player.getName()));
         Placeholder messagePlaceholder = new Placeholder("message", messageComponents);
         Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
         Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
+        Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(player.getWorld().getName()));
 
         BaseComponent[] format = PlaceholderProcessor.process(
                 chatFormat,
@@ -131,9 +124,12 @@ public class PlayerChatListener extends AbstractListener {
                 usernamePlaceholder,
                 messagePlaceholder,
                 prefixPlaceholder,
-                suffixPlaceholder);
+                suffixPlaceholder,
+                worldPlaceholder);
 
-        event.setFormat(TextComponent.toLegacyText(format).replace("%", "%%"));
+        event.setFormat(TextComponent.toLegacyText(format).
+
+                replace("%", "%%"));
 
         // check if messages should be sent manually
         if (ChatConfig.useCompatibilityMode()) {
@@ -161,11 +157,14 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         // send messages individually
-        for (Player all : recipients) {
+        for (
+                Player all : recipients) {
             all.spigot().sendMessage(format);
         }
 
         // show in log
-        plugin.getLogger().log(Level.INFO, TextComponent.toLegacyText(format));
+        plugin.getLogger().
+
+                log(Level.INFO, TextComponent.toLegacyText(format));
     }
 }

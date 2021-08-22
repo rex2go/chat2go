@@ -40,7 +40,7 @@ public class User {
 
         // load mute
         ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();
-        if(connectionWrapper == null) return;
+        if (connectionWrapper == null) return;
 
         this.mute = Chat2Go.getUserManager().loadMute(this, connectionWrapper.getConnection());
 
