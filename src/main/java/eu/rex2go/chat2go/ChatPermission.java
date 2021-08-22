@@ -6,7 +6,6 @@ public enum ChatPermission {
     BYPASS_MUTE,
     BYPASS_ANTISPAM,
     CHAT_COLOR,
-    CHAT_MENTION,
     COMMAND_BROADCAST,
     COMMAND_MSG,
     COMMAND_CHAT,
