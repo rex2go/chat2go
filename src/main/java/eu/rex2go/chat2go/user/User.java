@@ -144,6 +144,8 @@ public class User {
     }
 
     public void unmute() {
+        if(mute == null) return;
+
         mute = null;
 
         ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();

@@ -51,6 +51,11 @@ command:
     muted: "&7You muted &f{0} &7for &f{1}&7."
     muted_reason: "&7You muted &f{0} &7for &f{1}&7. &cReason: {2}"
 
+  unmute:
+    unmuted: "&7You unmuted &f{0}&7."
+    unmuted_target: "&7You have been unmuted."
+    not_muted: "&c{0} is not muted."
+
 
 # do not touch
 version: 1

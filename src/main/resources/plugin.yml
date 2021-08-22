@@ -35,6 +35,10 @@ commands:
     description: Mute a player
     usage: "§cUsage: /<command> <player>"
     permission: chat2go.command.mute
+  unmute:
+    description: Unmute a player
+    usage: "§cUsage: /<command> <player>"
+    permission: chat2go.command.mute
   broadcast:
     description: Broadcasts a message
     usage: "§cUsage: /<command> <message>"

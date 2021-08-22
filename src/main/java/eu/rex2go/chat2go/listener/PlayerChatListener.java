@@ -143,22 +143,21 @@ public class PlayerChatListener extends AbstractListener {
         Collection<? extends Player> recipients = new ArrayList<>(Bukkit.getOnlinePlayers());
 
         if (ChatConfig.isChatWorldChatEnabled()) {
+            recipients =
+                    recipients.stream().filter(
+                            r -> r.getWorld().equals(player.getWorld())
+                    ).collect(Collectors.toList());
+
             if (ChatConfig.isWorldChatConsiderRange()) {
                 recipients =
                         recipients.stream().filter(
                                 r -> r.getLocation().distance(player.getLocation()) <= ChatConfig.getChatWorldChatRange()
                         ).collect(Collectors.toList());
-            } else {
-                recipients =
-                        recipients.stream().filter(
-                                r -> r.getWorld().equals(player.getWorld())
-                        ).collect(Collectors.toList());
             }
         }
 
         // send messages individually
-        for (
-                Player all : recipients) {
+        for (Player all : recipients) {
             all.spigot().sendMessage(format);
         }
 

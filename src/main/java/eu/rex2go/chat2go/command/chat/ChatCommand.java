@@ -11,6 +11,7 @@ public class ChatCommand extends WrappedCommandExecutor {
     private final ChatReloadSubCommand chatReloadSubCommand;
     private final ChatClearSubCommand chatClearSubCommand;
     private final ChatBadWordSubCommand chatBadWordSubCommand;
+    private final ChatHelpSubCommand chatHelpSubCommand;
 
     public ChatCommand() {
         super("chat", new ChatTabCompleter());
@@ -18,6 +19,7 @@ public class ChatCommand extends WrappedCommandExecutor {
         chatReloadSubCommand = new ChatReloadSubCommand(this);
         chatClearSubCommand = new ChatClearSubCommand(this);
         chatBadWordSubCommand = new ChatBadWordSubCommand(this);
+        chatHelpSubCommand = new ChatHelpSubCommand(this);
     }
 
     @Override
@@ -41,6 +43,8 @@ public class ChatCommand extends WrappedCommandExecutor {
             chatClearSubCommand.execute(sender, user, label, args);
         } else if (subCommand.equalsIgnoreCase("badword")) {
             chatBadWordSubCommand.execute(sender, user, label, args);
+        } else {
+            chatHelpSubCommand.execute(sender, user, label, args);
         }
     }
 }

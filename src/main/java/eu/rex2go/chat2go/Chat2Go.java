@@ -6,6 +6,7 @@ import eu.rex2go.chat2go.command.chat.ChatCommand;
 import eu.rex2go.chat2go.command.msg.MsgCommand;
 import eu.rex2go.chat2go.command.mute.MuteCommand;
 import eu.rex2go.chat2go.command.reply.ReplyCommand;
+import eu.rex2go.chat2go.command.unmute.UnmuteCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.config.MessageConfig;
 import eu.rex2go.chat2go.database.DatabaseManager;
@@ -180,6 +181,7 @@ public class Chat2Go extends JavaPlugin {
         new MsgCommand();
         new MuteCommand();
         new ReplyCommand();
+        new UnmuteCommand();
     }
 
     private void setupManagers() {
