@@ -14,6 +14,9 @@ general:
   # description: bStats will collect anonymous statistics of this server
   statisticsAllowed: true
 
+  # description: set priority of chat2go's chat listener
+  eventPriority: HIGHEST
+
 
 # --- database --- #
 
@@ -42,6 +45,10 @@ chat:
     # - {world}
     # PlaceholderAPI is supported
     format: "{prefix }&7{username}{ suffix}&8 > &f{message}"
+
+    # description: formats for specific groups
+    groupFormats:
+      # admin: "{prefix }&7{username}{ suffix}&8 > &c{message}" # example
 
     # description: enables colored chatting, in 1.16+ hex colors are supported
     # permission: chat2go.chat.color
@@ -148,4 +155,4 @@ customComponents:
 # --- do not touch --- #
 
 # description: config version
-version: 6
+version: 7

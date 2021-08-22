@@ -9,10 +9,10 @@ import eu.rex2go.chat2go.placeholder.Placeholder;
 import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
 import eu.rex2go.chat2go.user.Mute;
 import eu.rex2go.chat2go.user.User;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +25,68 @@ import java.util.stream.Collectors;
 
 public class PlayerChatListener extends AbstractListener {
 
+    private EventPriority eventPriority;
+
+    public PlayerChatListener() {
+        String eventPriorityString = ChatConfig.getGeneralEventPriority();
+
+        try {
+            eventPriority = EventPriority.valueOf(eventPriorityString.toUpperCase());
+        } catch (Exception exception) {
+            eventPriority = EventPriority.HIGHEST;
+            Chat2Go.getInstance().getLogger().log(Level.WARNING, "Unrecognized event priority: " + eventPriorityString);
+            Chat2Go.getInstance().getLogger().log(Level.WARNING, "Falling back to HIGHEST");
+        }
+    }
+
+    // TODO extra class
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerChatLowest(AsyncPlayerChatEvent event) {
+        if(eventPriority == EventPriority.LOWEST) {
+            onPlayerChat(event);
+        }
+    }
+
+    // TODO extra class
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerChatLow(AsyncPlayerChatEvent event) {
+        if(eventPriority == EventPriority.LOW) {
+            onPlayerChat(event);
+        }
+    }
+
+    // TODO extra class
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerChatNormal(AsyncPlayerChatEvent event) {
+        if(eventPriority == EventPriority.NORMAL) {
+            onPlayerChat(event);
+        }
+    }
+
+    // TODO extra class
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerChatHigh(AsyncPlayerChatEvent event) {
+        if(eventPriority == EventPriority.HIGH) {
+            onPlayerChat(event);
+        }
+    }
+
+    // TODO extra class
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerChatHighest(AsyncPlayerChatEvent event) {
+        if(eventPriority == EventPriority.HIGHEST) {
+            onPlayerChat(event);
+        }
+    }
+
+    // TODO extra class
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
+        if(eventPriority == EventPriority.MONITOR) {
+            onPlayerChat(event);
+        }
+    }
+
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
 
@@ -108,12 +169,21 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         BaseComponent[] messageComponents = TextComponent.fromLegacyText(message);
+        String group = user.getPrimaryGroup();
         String chatFormat = ChatConfig.getChatFormatFormat();
+
+        // group formats
+        if(ChatConfig.getChatFormatGroupFormats().containsKey(group)) {
+            chatFormat = ChatConfig.getChatFormatGroupFormats().get(group);
+        }
 
         chatFormat = Chat2Go.parseColor(chatFormat);
 
-        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(player.getName()));
-        Placeholder messagePlaceholder = new Placeholder("message", messageComponents);
+        String username = ChatConfig.useCompatibilityMode() ? "%1$s" : user.getPlayer().getDisplayName();
+
+        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(username));
+        Placeholder messagePlaceholder = new Placeholder("message", ChatConfig.useCompatibilityMode()
+                ? TextComponent.fromLegacyText("%2$s") : messageComponents);
         Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
         Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
         Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(player.getWorld().getName()));
@@ -127,9 +197,8 @@ public class PlayerChatListener extends AbstractListener {
                 suffixPlaceholder,
                 worldPlaceholder);
 
-        event.setFormat(TextComponent.toLegacyText(format).
-
-                replace("%", "%%"));
+        event.setMessage(TextComponent.toPlainText(messageComponents));
+        event.setFormat(TextComponent.toLegacyText(format));
 
         // check if messages should be sent manually
         if (ChatConfig.useCompatibilityMode()) {
@@ -162,8 +231,6 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         // show in log
-        plugin.getLogger().
-
-                log(Level.INFO, TextComponent.toLegacyText(format));
+        plugin.getLogger().log(Level.INFO, TextComponent.toLegacyText(format));
     }
 }

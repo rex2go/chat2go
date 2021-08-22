@@ -17,6 +17,10 @@ public class ChatConfig extends RexConfig {
     private static boolean generalStatisticsAllowed;
 
     @Getter
+    @ConfigInfo(path = "general.eventPriority")
+    private static String generalEventPriority;
+
+    @Getter
     @ConfigInfo(path = "database.useMySQL")
     private static boolean databaseUseMySQL;
 
@@ -43,6 +47,9 @@ public class ChatConfig extends RexConfig {
     @Getter
     @ConfigInfo(path = "chat.format.format")
     private static String chatFormatFormat;
+
+    @Getter
+    private static Map<String, String> chatFormatGroupFormats;
 
     @Getter
     @ConfigInfo(path = "chat.format.translateChatColors")
@@ -123,7 +130,7 @@ public class ChatConfig extends RexConfig {
     private static Map<String, CustomComponent> customComponents;
 
     public ChatConfig() {
-        super(Chat2Go.getInstance(), "config.yml", 6);
+        super(Chat2Go.getInstance(), "config.yml", 7);
     }
 
     public static boolean useCompatibilityMode() {
@@ -133,6 +140,15 @@ public class ChatConfig extends RexConfig {
     @Override
     public void load() {
         super.load();
+
+        chatFormatGroupFormats = new HashMap<>();
+
+        if(getConfig().isConfigurationSection("chat.format.groupFormats")) {
+            getConfig().getConfigurationSection("chat.format.groupFormats").getKeys(false).forEach(id -> {
+                String groupFormat = getConfig().getString("chat.format.groupFormats." + id);
+                chatFormatGroupFormats.put(id, groupFormat);
+            });
+        }
 
         filterWhitelist = new ArrayList<>();
 

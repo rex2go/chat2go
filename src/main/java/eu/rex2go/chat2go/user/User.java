@@ -83,6 +83,14 @@ public class User {
         return "";
     }
 
+    public String getPrimaryGroup() {
+        if (Chat2Go.isVaultInstalled()) {
+            return Chat2Go.getChat().getPrimaryGroup(getPlayer());
+        }
+
+        return "";
+    }
+
     public void sendMessage(String key, boolean prefix, String... args) {
         if (getPlayer() == null) return;
 
@@ -144,7 +152,7 @@ public class User {
     }
 
     public void unmute() {
-        if(mute == null) return;
+        if (mute == null) return;
 
         mute = null;
 

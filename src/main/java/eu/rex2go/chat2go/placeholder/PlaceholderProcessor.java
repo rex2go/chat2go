@@ -3,6 +3,7 @@ package eu.rex2go.chat2go.placeholder;
 import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.config.ChatConfig;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -60,7 +61,6 @@ public class PlaceholderProcessor {
             remainder = split[1];
 
             BaseComponent[] beforeComponents = TextComponent.fromLegacyText(before);
-            net.md_5.bungee.api.ChatColor chatColor = beforeComponents[beforeComponents.length - 1].getColorRaw();
 
             componentList.addAll(Arrays.asList(beforeComponents));
 
@@ -74,16 +74,6 @@ public class PlaceholderProcessor {
                 continue;
             }
 
-            if (chatColor != null) {
-                for (BaseComponent baseComponent : placeholderContent) {
-                    if (baseComponent.getColorRaw() != null) {
-                        chatColor = baseComponent.getColorRaw();
-                    }
-
-                    baseComponent.setColor(chatColor);
-                }
-            }
-
             BaseComponent[] components = new ComponentBuilder(leadingSpaces)
                     .append(placeholderContent)
                     .append(trailingSpaces)
@@ -93,6 +83,19 @@ public class PlaceholderProcessor {
         }
 
         componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
+
+        // fix colors
+
+        ChatColor lastColor = ChatColor.WHITE;
+
+        for(BaseComponent baseComponent : componentList) {
+            if(baseComponent.getColorRaw() != null) {
+                lastColor = baseComponent.getColorRaw();
+                continue;
+            }
+
+            baseComponent.setColor(lastColor);
+        }
 
         return componentList.toArray(new BaseComponent[0]);
     }
