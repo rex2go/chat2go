@@ -25,6 +25,10 @@ public class ChatConfig extends RexConfig {
     private static boolean generalAdvancedPAPIResolving;
 
     @Getter
+    @ConfigInfo(path = "general.relationalPlaceholders")
+    private static boolean generalRelationalPlaceholders;
+
+    @Getter
     @ConfigInfo(path = "database.useMySQL")
     private static boolean databaseUseMySQL;
 
@@ -138,11 +142,11 @@ public class ChatConfig extends RexConfig {
     private static Map<String, CustomComponent> customComponents;
 
     public ChatConfig() {
-        super(Chat2Go.getInstance(), "config.yml", 8);
+        super(Chat2Go.getInstance(), "config.yml", 9);
     }
 
     public static boolean useCompatibilityMode() {
-        return !(customComponentsEnabled);
+        return !(customComponentsEnabled || generalRelationalPlaceholders);
     }
 
     @Override
@@ -151,7 +155,7 @@ public class ChatConfig extends RexConfig {
 
         chatFormatGroupFormats = new HashMap<>();
 
-        if(getConfig().isConfigurationSection("chat.format.groupFormats")) {
+        if (getConfig().isConfigurationSection("chat.format.groupFormats")) {
             getConfig().getConfigurationSection("chat.format.groupFormats").getKeys(false).forEach(id -> {
                 String groupFormat = getConfig().getString("chat.format.groupFormats." + id);
                 chatFormatGroupFormats.put(id, groupFormat);

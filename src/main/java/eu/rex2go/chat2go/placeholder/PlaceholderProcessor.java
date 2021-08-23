@@ -19,15 +19,24 @@ import java.util.regex.Pattern;
 public class PlaceholderProcessor {
 
     public static BaseComponent[] process(String format, Player processor, boolean escapePercentage, Placeholder... placeholders) {
+        return process(format, processor, null, escapePercentage, placeholders);
+    }
+
+    public static BaseComponent[] process(String format, Player processor, Player relation, boolean escapePercentage, Placeholder... placeholders) {
         // check for placeholder api stuff
         if (Chat2Go.isPlaceholderInstalled()) {
             format = PlaceholderAPI.setPlaceholders(processor.getPlayer(), format);
+
+            if(relation != null && ChatConfig.isGeneralRelationalPlaceholders()) {
+                format = PlaceholderAPI.setRelationalPlaceholders(processor, relation, format);
+            }
+
             // translate colors of placeholder api stuff
             format = Chat2Go.parseColor(format);
 
             // placeholder api workaround regex e.g. %recipient_prefix%
             if(ChatConfig.isGeneralAdvancedPAPIResolving() && format.contains("%")) {
-                Pattern placeholderPattern = Pattern.compile("\\%(.*?)%");
+                Pattern placeholderPattern = Pattern.compile("%([^ ]*?)%");
                 Matcher placeholderMatcher = placeholderPattern.matcher(format);
 
                 while (placeholderMatcher.find()) {
@@ -45,6 +54,11 @@ public class PlaceholderProcessor {
 
                                 format = format.replace(match, "%" + parts[1] + "%");
                                 format = PlaceholderAPI.setPlaceholders(context, format);
+
+                                if(relation != null && ChatConfig.isGeneralRelationalPlaceholders()) {
+                                    format = PlaceholderAPI.setRelationalPlaceholders(processor, relation, format);
+                                }
+
                                 format = Chat2Go.parseColor(format);
                             }
                         }
@@ -54,14 +68,14 @@ public class PlaceholderProcessor {
         }
 
         if(escapePercentage) {
-            format = format.replace("%", "%%");
+            format = format.replaceAll("%([^ ]*?)%", "");
         }
 
         // placeholder regex, e.g. { prefix }, {suffix}
         Pattern pattern = Pattern.compile("\\{( *)(.*?)( *)}");
         Matcher matcher = pattern.matcher(format);
         List<BaseComponent> componentList = new ArrayList<>();
-        String remainder = "";
+        String remainder = format;
 
         while (matcher.find()) {
             String match = matcher.group(0);
@@ -114,7 +128,9 @@ public class PlaceholderProcessor {
             componentList.addAll(Arrays.asList(components));
         }
 
-        componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
+        if(remainder != null && !remainder.isEmpty()) {
+            componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
+        }
 
         // fix colors
         ChatColor lastColor = ChatColor.WHITE;

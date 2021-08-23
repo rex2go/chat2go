@@ -17,9 +17,13 @@ general:
   # description: set priority of chat2go's chat listener
   eventPriority: HIGHEST
 
-  # description: will try to resolve player context by chat2go placeholder, may take up some extra resources
+  # description: will try to resolve player context by chat2go placeholder
   # e.g. %recipient_<PAPI Placeholder>%
   advancedPAPIResolving: true
+
+  # description: support PAPI relational placeholders
+  # warning: may break plugins with higher priority
+  relationalPlaceholders: false
 
 
 # --- database --- #
@@ -148,7 +152,7 @@ notification:
 # --- custom text --- #
 
 customComponents:
-  # warning: may break some plugins
+  # warning: may break plugins with higher priority
   enabled: false
 
   components:
@@ -161,4 +165,4 @@ customComponents:
 # --- do not touch --- #
 
 # description: config version
-version: 8
+version: 9

@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -111,6 +113,7 @@ public class PlayerChatListener extends AbstractListener {
             return;
         }
 
+        // player muted
         if (user.isMuted()
                 && !user.hasPermission(ChatPermission.BYPASS_MUTE.getPermission())) {
             Mute mute = user.getMute();
@@ -173,6 +176,11 @@ public class PlayerChatListener extends AbstractListener {
             message = Chat2Go.parseColor(message);
         }
 
+        // escape % because without compatibility mode message is hard coded in format
+        if (!ChatConfig.useCompatibilityMode()) {
+            message = message.replace("%", "%%");
+        }
+
         BaseComponent[] messageComponents = TextComponent.fromLegacyText(message);
         String group = user.getPrimaryGroup();
         String chatFormat = ChatConfig.getChatFormatFormat();
@@ -182,28 +190,10 @@ public class PlayerChatListener extends AbstractListener {
             chatFormat = ChatConfig.getChatFormatGroupFormats().get(group);
         }
 
+        // parse format color
         chatFormat = Chat2Go.parseColor(chatFormat);
 
-        String username = ChatConfig.useCompatibilityMode() ? "%1$s" : user.getPlayer().getDisplayName();
-
-        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(username));
-        Placeholder messagePlaceholder = new Placeholder("message", ChatConfig.useCompatibilityMode()
-                ? TextComponent.fromLegacyText("%2$s") : messageComponents);
-        Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
-        Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
-        Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(player.getWorld().getName()));
-        Placeholder groupPlaceholder = new Placeholder("group", TextComponent.fromLegacyText(user.getPrimaryGroup()));
-
-        BaseComponent[] format = PlaceholderProcessor.process(
-                chatFormat,
-                player,
-                true,
-                usernamePlaceholder,
-                messagePlaceholder,
-                prefixPlaceholder,
-                suffixPlaceholder,
-                worldPlaceholder,
-                groupPlaceholder);
+        BaseComponent[] format = getFormat(user, null, chatFormat, messageComponents);
 
         // fix message color
         for (int i = format.length - 1; i > 0; i--) {
@@ -253,9 +243,47 @@ public class PlayerChatListener extends AbstractListener {
         // stop bukkit from sending the chat message, fix for e.g. DiscordSRV
         event.getRecipients().clear();
 
+        // workaround double percent bug
+        message = TextComponent.toLegacyText(messageComponents);
+        message = String.format(message);
+        messageComponents = TextComponent.fromLegacyText(message);
+
+        // update format
+        format = getFormat(user, null, chatFormat, messageComponents);
+
         // send messages individually
-        for (Player all : recipients) {
-            all.spigot().sendMessage(format);
+        for (Player recipient : recipients) {
+            if (ChatConfig.isGeneralRelationalPlaceholders()) {
+                format = getFormat(user, recipient, chatFormat, messageComponents);
+                recipient.spigot().sendMessage(format);
+                continue;
+            }
+
+            recipient.spigot().sendMessage(format);
         }
+    }
+
+    private BaseComponent[] getFormat(User user, @Nullable Player recipient, String chatFormat, BaseComponent[] messageComponents) {
+        String username = ChatConfig.useCompatibilityMode() ? "%1$s" : user.getPlayer().getDisplayName();
+
+        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(username));
+        Placeholder messagePlaceholder = new Placeholder("message", ChatConfig.useCompatibilityMode()
+                ? TextComponent.fromLegacyText("%2$s") : messageComponents);
+        Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
+        Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
+        Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(user.getPlayer().getWorld().getName()));
+        Placeholder groupPlaceholder = new Placeholder("group", TextComponent.fromLegacyText(user.getPrimaryGroup()));
+
+        return PlaceholderProcessor.process(
+                chatFormat,
+                user.getPlayer(),
+                recipient,
+                true,
+                usernamePlaceholder,
+                messagePlaceholder,
+                prefixPlaceholder,
+                suffixPlaceholder,
+                worldPlaceholder,
+                groupPlaceholder);
     }
 }
