@@ -185,11 +185,6 @@ public class PlayerChatListener extends AbstractListener {
         String group = user.getPrimaryGroup();
         String chatFormat = ChatConfig.getChatFormatFormat();
 
-        // escape % because without compatibility mode message is hard coded in format
-        if (!ChatConfig.useCompatibilityMode()) {
-            message = message.replace("%", "%%");
-        }
-
         // group formats
         if (ChatConfig.getChatFormatGroupFormats().containsKey(group)) {
             chatFormat = ChatConfig.getChatFormatGroupFormats().get(group);
