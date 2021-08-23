@@ -187,6 +187,7 @@ public class PlayerChatListener extends AbstractListener {
         Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
         Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
         Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(player.getWorld().getName()));
+        Placeholder groupPlaceholder = new Placeholder("group", TextComponent.fromLegacyText(user.getPrimaryGroup()));
 
         BaseComponent[] format = PlaceholderProcessor.process(
                 chatFormat,
@@ -195,9 +196,25 @@ public class PlayerChatListener extends AbstractListener {
                 messagePlaceholder,
                 prefixPlaceholder,
                 suffixPlaceholder,
-                worldPlaceholder);
+                worldPlaceholder,
+                groupPlaceholder);
 
-        event.setMessage(TextComponent.toPlainText(messageComponents));
+        // fix message color
+        for(int i = format.length - 1;  i > 0; i--) {
+            BaseComponent baseComponent = format[i];
+
+            if(baseComponent.getColorRaw() != null) {
+                for(BaseComponent messageComponent : messageComponents) {
+                    if(messageComponent.getColorRaw() != null) break;
+
+                    messageComponent.setColor(baseComponent.getColorRaw());
+                }
+
+                break;
+            }
+        }
+
+        event.setMessage(TextComponent.toLegacyText(messageComponents));
         event.setFormat(TextComponent.toLegacyText(format));
 
         // check if messages should be sent manually

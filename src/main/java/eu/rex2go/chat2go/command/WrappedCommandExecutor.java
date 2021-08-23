@@ -22,7 +22,7 @@ public abstract class WrappedCommandExecutor extends BaseCommand implements Comm
         if (tabCompleter != null) pluginCommand.setTabCompleter(tabCompleter);
 
         if (pluginCommand.getPermissionMessage() == null) {
-            pluginCommand.setPermissionMessage(Chat2Go.getTranslator().getTranslation("command.no_permission"));
+            pluginCommand.setPermissionMessage(Chat2Go.getTranslator().getTranslation("command.error.no_permission"));
         }
     }
 

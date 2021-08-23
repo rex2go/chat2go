@@ -23,7 +23,12 @@ chat:
     blocked: "&cYour message containing \"{0}\" has been blocked."
 
 command:
-  no_permission: "&cYou are not permitted to execute this command."
+  error:
+    no_permission: "&cYou are not permitted to execute this command."
+    player_not_found: "&cPlayer \"{0}\" could not be found."
+    player_not_online: "&cPlayer \"{0}\" is not online."
+    not_a_number: "&cInvalid number: {0}"
+    no_player: "&cThis command can only be executed as a player"
 
   chat:
     type_help: "&7Type \"/chat help\" for help"
@@ -58,4 +63,4 @@ command:
 
 
 # do not touch
-version: 1
+version: 2

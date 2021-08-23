@@ -85,11 +85,10 @@ public class PlaceholderProcessor {
         componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
 
         // fix colors
-
         ChatColor lastColor = ChatColor.WHITE;
 
-        for(BaseComponent baseComponent : componentList) {
-            if(baseComponent.getColorRaw() != null) {
+        for (BaseComponent baseComponent : componentList) {
+            if (baseComponent.getColorRaw() != null) {
                 lastColor = baseComponent.getColorRaw();
                 continue;
             }
