@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class CustomComponent {
@@ -71,6 +72,8 @@ public class CustomComponent {
                 ));
             }
         }
+
+        player.spigot().sendMessage(components);
 
         return components;
     }

@@ -75,7 +75,7 @@ public class PlaceholderProcessor {
         Pattern pattern = Pattern.compile("\\{( *)(.*?)( *)}");
         Matcher matcher = pattern.matcher(format);
         List<BaseComponent> componentList = new ArrayList<>();
-        String remainder = "";
+        String remainder = format;
 
         while (matcher.find()) {
             String match = matcher.group(0);
@@ -128,7 +128,9 @@ public class PlaceholderProcessor {
             componentList.addAll(Arrays.asList(components));
         }
 
-        componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
+        if(remainder != null && !remainder.isEmpty()) {
+            componentList.addAll(Arrays.asList(TextComponent.fromLegacyText(remainder)));
+        }
 
         // fix colors
         ChatColor lastColor = ChatColor.WHITE;
