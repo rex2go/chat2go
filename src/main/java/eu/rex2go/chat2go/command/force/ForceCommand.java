@@ -35,7 +35,7 @@ public class ForceCommand extends WrappedCommandExecutor {
             throw new CustomErrorCommandException("command.force.force_yourself");
         }
 
-        // Message receiver
+        // Message recipient
         Player targetPlayer =
                 Bukkit.getOnlinePlayers().stream().filter(p -> p.getName().equalsIgnoreCase(targetName)).findFirst().orElse(null);
 

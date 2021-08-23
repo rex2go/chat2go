@@ -7,6 +7,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -23,6 +24,33 @@ public class PlaceholderProcessor {
             format = PlaceholderAPI.setPlaceholders(processor.getPlayer(), format);
             // translate colors of placeholder api stuff
             format = Chat2Go.parseColor(format);
+
+            // placeholder api workaround regex e.g. %recipient_prefix%
+            if(ChatConfig.isGeneralAdvancedPAPIResolving() && format.contains("%")) {
+                Pattern placeholderPattern = Pattern.compile("\\%(.*?)%");
+                Matcher placeholderMatcher = placeholderPattern.matcher(format);
+
+                while (placeholderMatcher.find()) {
+                    String match = placeholderMatcher.group(0);
+                    String placeholderStr = placeholderMatcher.group(1);
+
+                    if(placeholderStr.contains("_")) {
+                        String[] parts = placeholderStr.split("_", 2);
+                        String placeholderKey = parts[0];
+
+                        for(Placeholder placeholder : placeholders) {
+                            if(placeholder.getKey().equalsIgnoreCase(placeholderKey)) {
+                                Player context = Bukkit.getPlayer(TextComponent.toPlainText(placeholder.getReplacement()));
+                                if(context == null) continue;
+
+                                format = format.replace(match, "%" + parts[1] + "%");
+                                format = PlaceholderAPI.setPlaceholders(context, format);
+                                format = Chat2Go.parseColor(format);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if(escapePercentage) {

@@ -21,6 +21,10 @@ public class ChatConfig extends RexConfig {
     private static String generalEventPriority;
 
     @Getter
+    @ConfigInfo(path = "general.advancedPAPIResolving")
+    private static boolean generalAdvancedPAPIResolving;
+
+    @Getter
     @ConfigInfo(path = "database.useMySQL")
     private static boolean databaseUseMySQL;
 
@@ -134,7 +138,7 @@ public class ChatConfig extends RexConfig {
     private static Map<String, CustomComponent> customComponents;
 
     public ChatConfig() {
-        super(Chat2Go.getInstance(), "config.yml", 7);
+        super(Chat2Go.getInstance(), "config.yml", 8);
     }
 
     public static boolean useCompatibilityMode() {

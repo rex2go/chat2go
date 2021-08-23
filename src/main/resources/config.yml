@@ -17,6 +17,10 @@ general:
   # description: set priority of chat2go's chat listener
   eventPriority: HIGHEST
 
+  # description: will try to resolve player context by chat2go placeholder, may take up some extra resources
+  # e.g. %recipient_<PAPI Placeholder>%
+  advancedPAPIResolving: true
+
 
 # --- database --- #
 
@@ -102,7 +106,9 @@ filter:
   # possible values: [BLOCK, CENSOR]
   filterMode: BLOCK
 
-  # description: regex enabled whitelist
+  # bad words are added via /chat badword add <word>
+
+  # description: regex enabled whitelist for e.g. your own website
   whitelist:
     - rex2go.eu # example
 
@@ -127,8 +133,8 @@ antiSpam:
 
 format:
   # description: format of /msg
-  privateMessageTo: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
-  privateMessageFrom: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
+  privateMessageTo: "&8MSG &7[{sender} -> {recipient}]&8: &f{message}"
+  privateMessageFrom: "&8MSG &7[{sender} -> {recipient}]&8: &f{message}"
 
   # description: format of /broadcast
   broadcast: "&f[&cBroadcast&f] {message}"
@@ -155,4 +161,4 @@ customComponents:
 # --- do not touch --- #
 
 # description: config version
-version: 7
+version: 8
