@@ -74,9 +74,11 @@ public class MsgCommand extends WrappedCommandExecutor {
     public static void sendPrivateMessage(User sender, User receiver, String message) {
         receiver.setLastChatter(sender);
 
-        String format = ChatConfig.getFormatPrivateMessage();
+        String formatTo = ChatConfig.getFormatPrivateMessageTo();
+        String formatFrom = ChatConfig.getFormatPrivateMessageFrom();
 
-        format = Chat2Go.parseColor(format);
+        formatTo = Chat2Go.parseColor(formatTo);
+        formatFrom = Chat2Go.parseColor(formatFrom);
 
         Placeholder senderPlaceholder = new Placeholder("sender", TextComponent.fromLegacyText(sender.getPlayer().getDisplayName()));
         Placeholder senderPrefixPlaceholder = new Placeholder("senderPrefix", TextComponent.fromLegacyText(sender.getPrefix()));
@@ -92,9 +94,10 @@ public class MsgCommand extends WrappedCommandExecutor {
 
         Placeholder messagePlaceholder = new Placeholder("message", TextComponent.fromLegacyText(message));
 
-        BaseComponent[] components = PlaceholderProcessor.process(
-                format,
+        BaseComponent[] componentsTo = PlaceholderProcessor.process(
+                formatTo,
                 sender.getPlayer(),
+                false,
                 senderPlaceholder,
                 senderPrefixPlaceholder,
                 senderSuffixPlaceholder,
@@ -107,7 +110,23 @@ public class MsgCommand extends WrappedCommandExecutor {
                 receiverGroupPlaceholder,
                 messagePlaceholder);
 
-        sender.getPlayer().spigot().sendMessage(components);
-        receiver.getPlayer().spigot().sendMessage(components);
+        BaseComponent[] componentsFrom = PlaceholderProcessor.process(
+                formatFrom,
+                sender.getPlayer(),
+                false,
+                senderPlaceholder,
+                senderPrefixPlaceholder,
+                senderSuffixPlaceholder,
+                senderWorldPlaceholder,
+                senderGroupPlaceholder,
+                receiverPlaceholder,
+                receiverPrefixPlaceholder,
+                receiverSuffixPlaceholder,
+                receiverWorldPlaceholder,
+                receiverGroupPlaceholder,
+                messagePlaceholder);
+
+        sender.getPlayer().spigot().sendMessage(componentsTo);
+        receiver.getPlayer().spigot().sendMessage(componentsFrom);
     }
 }

@@ -81,7 +81,6 @@ chat:
     format: "&7[&c-&7] &7{username}"
 
   # description: per world chat
-  # warning: may break some plugins
   worldChat:
     # description: enable world chat
     enabled: false
@@ -128,7 +127,8 @@ antiSpam:
 
 format:
   # description: format of /msg
-  privateMessage: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
+  privateMessageTo: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
+  privateMessageFrom: "&8MSG &7[{sender} -> {receiver}]&8: &f{message}"
 
   # description: format of /broadcast
   broadcast: "&f[&cBroadcast&f] {message}"

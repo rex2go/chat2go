@@ -115,8 +115,12 @@ public class ChatConfig extends RexConfig {
     private static boolean notificationFilterEnabled;
 
     @Getter
-    @ConfigInfo(path = "format.privateMessage")
-    private static String formatPrivateMessage;
+    @ConfigInfo(path = "format.privateMessageTo")
+    private static String formatPrivateMessageTo;
+
+    @Getter
+    @ConfigInfo(path = "format.privateMessageFrom")
+    private static String formatPrivateMessageFrom;
 
     @Getter
     @ConfigInfo(path = "format.broadcast")
@@ -134,7 +138,7 @@ public class ChatConfig extends RexConfig {
     }
 
     public static boolean useCompatibilityMode() {
-        return !(chatWorldChatEnabled || customComponentsEnabled);
+        return !(customComponentsEnabled);
     }
 
     @Override

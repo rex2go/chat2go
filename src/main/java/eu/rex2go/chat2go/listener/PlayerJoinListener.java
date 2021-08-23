@@ -28,11 +28,22 @@ public class PlayerJoinListener extends AbstractListener {
 
         format = Chat2Go.parseColor(format);
 
-        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(user.getName()));
+        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(user.getDisplayName()));
         Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
         Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
+        Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(player.getWorld().getName()));
+        Placeholder groupPlaceholder = new Placeholder("group", TextComponent.fromLegacyText(user.getPrimaryGroup()));
 
-        BaseComponent[] components = PlaceholderProcessor.process(format, player, usernamePlaceholder, prefixPlaceholder, suffixPlaceholder);
+        BaseComponent[] components = PlaceholderProcessor.process(
+                format,
+                player,
+                false,
+                usernamePlaceholder,
+                prefixPlaceholder,
+                suffixPlaceholder,
+                worldPlaceholder,
+                groupPlaceholder
+        );
 
         event.setJoinMessage(TextComponent.toLegacyText(components));
     }

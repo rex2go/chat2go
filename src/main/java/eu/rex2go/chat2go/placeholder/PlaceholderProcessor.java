@@ -17,12 +17,16 @@ import java.util.regex.Pattern;
 
 public class PlaceholderProcessor {
 
-    public static BaseComponent[] process(String format, Player processor, Placeholder... placeholders) {
+    public static BaseComponent[] process(String format, Player processor, boolean escapePercentage, Placeholder... placeholders) {
         // check for placeholder api stuff
         if (Chat2Go.isPlaceholderInstalled()) {
             format = PlaceholderAPI.setPlaceholders(processor.getPlayer(), format);
             // translate colors of placeholder api stuff
             format = Chat2Go.parseColor(format);
+        }
+
+        if(escapePercentage) {
+            format = format.replace("%", "%%");
         }
 
         // placeholder regex, e.g. { prefix }, {suffix}

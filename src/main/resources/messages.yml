@@ -54,6 +54,10 @@ command:
     toggle_enabled: "&7You are now private chatting with {0}"
     toggle_disabled: "&7You are no longer private chatting with {0}"
 
+  force:
+    forced: "&7You forced {0}: &f{1}"
+    force_yourself: "&cYou can't force yourself."
+
   mute:
     muted: "&7You muted &f{0} &7for &f{1}&7."
     muted_reason: "&7You muted &f{0} &7for &f{1}&7. &cReason: {2}"

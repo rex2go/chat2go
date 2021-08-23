@@ -4,14 +4,16 @@ import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.database.ConnectionWrapper;
 import eu.rex2go.chat2go.database.DatabaseManager;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class User {
 
@@ -204,10 +206,24 @@ public class User {
     }
 
     public void setLastChatter(User lastChatter) {
-        if(inPrivateChat) {
+        if (inPrivateChat) {
             setInPrivateChat(false);
         }
 
         this.lastChatter = lastChatter;
+    }
+
+    public void say(String message) {
+        AsyncPlayerChatEvent asyncPlayerChatEvent = new AsyncPlayerChatEvent(false, getPlayer(), message, new HashSet<>(Bukkit.getOnlinePlayers()));
+        Bukkit.getPluginManager().callEvent(asyncPlayerChatEvent);
+
+        String formatted = String.format(asyncPlayerChatEvent.getFormat(), getDisplayName(), asyncPlayerChatEvent.getMessage());
+
+        // show in log
+        Chat2Go.getInstance().getLogger().log(Level.INFO, formatted);
+
+        for (Player recipient : asyncPlayerChatEvent.getRecipients()) {
+            recipient.sendMessage(formatted);
+        }
     }
 }

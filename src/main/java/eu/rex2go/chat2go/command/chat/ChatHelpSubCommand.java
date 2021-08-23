@@ -44,6 +44,9 @@ public class ChatHelpSubCommand extends SubCommand {
         sender.sendMessage(ChatColor.WHITE + "- " + color + "/broadcast <message> " + ChatColor.WHITE + " | "
                 + ChatColor.GRAY + " broadcast a message");
 
+        sender.sendMessage(ChatColor.WHITE + "- " + color + "/force <player> <command|message> " + ChatColor.WHITE + " | "
+                + ChatColor.GRAY + " force a player");
+
         sender.sendMessage(ChatColor.GRAY + "---                  ---");
     }
 }

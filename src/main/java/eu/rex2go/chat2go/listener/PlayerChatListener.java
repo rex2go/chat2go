@@ -13,16 +13,13 @@ import eu.rex2go.chat2go.user.User;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class PlayerChatListener extends AbstractListener {
 
@@ -43,7 +40,7 @@ public class PlayerChatListener extends AbstractListener {
     // TODO extra class
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChatLowest(AsyncPlayerChatEvent event) {
-        if(eventPriority == EventPriority.LOWEST) {
+        if (eventPriority == EventPriority.LOWEST) {
             onPlayerChat(event);
         }
     }
@@ -51,7 +48,7 @@ public class PlayerChatListener extends AbstractListener {
     // TODO extra class
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerChatLow(AsyncPlayerChatEvent event) {
-        if(eventPriority == EventPriority.LOW) {
+        if (eventPriority == EventPriority.LOW) {
             onPlayerChat(event);
         }
     }
@@ -59,7 +56,7 @@ public class PlayerChatListener extends AbstractListener {
     // TODO extra class
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChatNormal(AsyncPlayerChatEvent event) {
-        if(eventPriority == EventPriority.NORMAL) {
+        if (eventPriority == EventPriority.NORMAL) {
             onPlayerChat(event);
         }
     }
@@ -67,7 +64,7 @@ public class PlayerChatListener extends AbstractListener {
     // TODO extra class
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChatHigh(AsyncPlayerChatEvent event) {
-        if(eventPriority == EventPriority.HIGH) {
+        if (eventPriority == EventPriority.HIGH) {
             onPlayerChat(event);
         }
     }
@@ -75,7 +72,7 @@ public class PlayerChatListener extends AbstractListener {
     // TODO extra class
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChatHighest(AsyncPlayerChatEvent event) {
-        if(eventPriority == EventPriority.HIGHEST) {
+        if (eventPriority == EventPriority.HIGHEST) {
             onPlayerChat(event);
         }
     }
@@ -83,7 +80,7 @@ public class PlayerChatListener extends AbstractListener {
     // TODO extra class
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
-        if(eventPriority == EventPriority.MONITOR) {
+        if (eventPriority == EventPriority.MONITOR) {
             onPlayerChat(event);
         }
     }
@@ -101,7 +98,7 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         // private chat
-        if(user.isInPrivateChat()) {
+        if (user.isInPrivateChat()) {
             MsgCommand.sendPrivateMessage(user, user.getLastChatter(), event.getMessage());
             event.setCancelled(true);
             return;
@@ -181,7 +178,7 @@ public class PlayerChatListener extends AbstractListener {
         String chatFormat = ChatConfig.getChatFormatFormat();
 
         // group formats
-        if(ChatConfig.getChatFormatGroupFormats().containsKey(group)) {
+        if (ChatConfig.getChatFormatGroupFormats().containsKey(group)) {
             chatFormat = ChatConfig.getChatFormatGroupFormats().get(group);
         }
 
@@ -200,6 +197,7 @@ public class PlayerChatListener extends AbstractListener {
         BaseComponent[] format = PlaceholderProcessor.process(
                 chatFormat,
                 player,
+                true,
                 usernamePlaceholder,
                 messagePlaceholder,
                 prefixPlaceholder,
@@ -208,12 +206,12 @@ public class PlayerChatListener extends AbstractListener {
                 groupPlaceholder);
 
         // fix message color
-        for(int i = format.length - 1;  i > 0; i--) {
+        for (int i = format.length - 1; i > 0; i--) {
             BaseComponent baseComponent = format[i];
 
-            if(baseComponent.getColorRaw() != null) {
-                for(BaseComponent messageComponent : messageComponents) {
-                    if(messageComponent.getColorRaw() != null) break;
+            if (baseComponent.getColorRaw() != null) {
+                for (BaseComponent messageComponent : messageComponents) {
+                    if (messageComponent.getColorRaw() != null) break;
 
                     messageComponent.setColor(baseComponent.getColorRaw());
                 }
@@ -222,40 +220,42 @@ public class PlayerChatListener extends AbstractListener {
             }
         }
 
-        event.setMessage(TextComponent.toLegacyText(messageComponents));
-        event.setFormat(TextComponent.toLegacyText(format));
+        try {
+            event.setMessage(TextComponent.toLegacyText(messageComponents));
+            event.setFormat(TextComponent.toLegacyText(format));
+        } catch (Exception exception) {
+            Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Spigot formatting error: " + exception.getMessage());
+            Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Your chat format is invalid.");
+        }
+
+        // TODO filter ignore list
+        Set<Player> recipients = new HashSet<>(event.getRecipients());
+
+        if (ChatConfig.isChatWorldChatEnabled()) {
+            for (Player recipient : recipients) {
+                if (!recipient.getWorld().equals(player.getWorld())) {
+                    event.getRecipients().remove(recipient);
+                    continue;
+                }
+
+                if (ChatConfig.isWorldChatConsiderRange()
+                        && recipient.getLocation().distance(player.getLocation()) > ChatConfig.getChatWorldChatRange()) {
+                    event.getRecipients().remove(recipient);
+                }
+            }
+        }
 
         // check if messages should be sent manually
         if (ChatConfig.useCompatibilityMode()) {
             return;
         }
 
-        // stop bukkit from sending the chat message
-        event.setCancelled(true);
-
-        // collect recipients
-        Collection<? extends Player> recipients = new ArrayList<>(Bukkit.getOnlinePlayers());
-
-        if (ChatConfig.isChatWorldChatEnabled()) {
-            recipients =
-                    recipients.stream().filter(
-                            r -> r.getWorld().equals(player.getWorld())
-                    ).collect(Collectors.toList());
-
-            if (ChatConfig.isWorldChatConsiderRange()) {
-                recipients =
-                        recipients.stream().filter(
-                                r -> r.getLocation().distance(player.getLocation()) <= ChatConfig.getChatWorldChatRange()
-                        ).collect(Collectors.toList());
-            }
-        }
+        // stop bukkit from sending the chat message, fix for e.g. DiscordSRV
+        event.getRecipients().clear();
 
         // send messages individually
         for (Player all : recipients) {
             all.spigot().sendMessage(format);
         }
-
-        // show in log
-        plugin.getLogger().log(Level.INFO, TextComponent.toLegacyText(format));
     }
 }

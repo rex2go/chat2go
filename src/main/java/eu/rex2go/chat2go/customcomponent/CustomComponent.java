@@ -40,34 +40,34 @@ public class CustomComponent {
 
     public BaseComponent[] build(Player player, Placeholder... placeholders) {
         text = Chat2Go.parseColor(text);
-        BaseComponent[] components = PlaceholderProcessor.process(text, player, placeholders);
+        BaseComponent[] components = PlaceholderProcessor.process(text, player, false, placeholders);
 
         for (BaseComponent component : components) {
             if (hoverText != null && !hoverText.equals("")) {
                 component.setHoverEvent(new HoverEvent(
                         HoverEvent.Action.SHOW_TEXT,
-                        new Text(PlaceholderProcessor.process(this.hoverText, player, placeholders))
+                        new Text(PlaceholderProcessor.process(this.hoverText, player, false, placeholders))
                 ));
             }
 
             if (suggestCommand != null && !suggestCommand.equals("")) {
                 component.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
-                        TextComponent.toPlainText(PlaceholderProcessor.process(this.suggestCommand, player, placeholders))
+                        TextComponent.toPlainText(PlaceholderProcessor.process(this.suggestCommand, player, false, placeholders))
                 ));
             }
 
             if (runCommand != null && !runCommand.equals("")) {
                 component.setClickEvent(new ClickEvent(
                         ClickEvent.Action.RUN_COMMAND,
-                        TextComponent.toPlainText(PlaceholderProcessor.process(this.runCommand, player, placeholders))
+                        TextComponent.toPlainText(PlaceholderProcessor.process(this.runCommand, player, false, placeholders))
                 ));
             }
 
             if (openUrl != null && !openUrl.equals("")) {
                 component.setClickEvent(new ClickEvent(
                         ClickEvent.Action.OPEN_URL,
-                        TextComponent.toPlainText(PlaceholderProcessor.process(this.openUrl, player, placeholders))
+                        TextComponent.toPlainText(PlaceholderProcessor.process(this.openUrl, player, false, placeholders))
                 ));
             }
         }
