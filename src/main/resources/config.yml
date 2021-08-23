@@ -21,6 +21,9 @@ general:
   # e.g. %recipient_<PAPI Placeholder>%
   advancedPAPIResolving: true
 
+  # warning: may break some plugins
+  relationalPlaceholders: false
+
 
 # --- database --- #
 

@@ -19,9 +19,18 @@ import java.util.regex.Pattern;
 public class PlaceholderProcessor {
 
     public static BaseComponent[] process(String format, Player processor, boolean escapePercentage, Placeholder... placeholders) {
+        return process(format, processor, null, escapePercentage, placeholders);
+    }
+
+    public static BaseComponent[] process(String format, Player processor, Player relation, boolean escapePercentage, Placeholder... placeholders) {
         // check for placeholder api stuff
         if (Chat2Go.isPlaceholderInstalled()) {
             format = PlaceholderAPI.setPlaceholders(processor.getPlayer(), format);
+
+            if(relation != null && ChatConfig.isGeneralRelationalPlaceholders()) {
+                format = PlaceholderAPI.setRelationalPlaceholders(processor, relation, format);
+            }
+
             // translate colors of placeholder api stuff
             format = Chat2Go.parseColor(format);
 
@@ -45,6 +54,11 @@ public class PlaceholderProcessor {
 
                                 format = format.replace(match, "%" + parts[1] + "%");
                                 format = PlaceholderAPI.setPlaceholders(context, format);
+
+                                if(relation != null && ChatConfig.isGeneralRelationalPlaceholders()) {
+                                    format = PlaceholderAPI.setRelationalPlaceholders(processor, relation, format);
+                                }
+
                                 format = Chat2Go.parseColor(format);
                             }
                         }
