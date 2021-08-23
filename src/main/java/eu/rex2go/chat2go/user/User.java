@@ -206,7 +206,7 @@ public class User {
     }
 
     public void setLastChatter(User lastChatter) {
-        if (inPrivateChat) {
+        if (inPrivateChat && lastChatter != this.lastChatter) {
             setInPrivateChat(false);
         }
 
