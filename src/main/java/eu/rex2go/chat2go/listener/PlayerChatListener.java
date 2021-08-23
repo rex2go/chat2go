@@ -13,6 +13,7 @@ import eu.rex2go.chat2go.user.User;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -204,8 +205,8 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         try {
-            event.setMessage(TextComponent.toLegacyText(messageComponents));
-            event.setFormat(TextComponent.toLegacyText(format));
+            event.setMessage(TextComponent.toLegacyText(messageComponents).replace("%", "%%"));
+            event.setFormat(TextComponent.toLegacyText(format).replace("%", "%%"));
         } catch (Exception exception) {
             Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Spigot formatting error: " + exception.getMessage());
             Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Your chat format is invalid.");

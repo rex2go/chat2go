@@ -67,10 +67,8 @@ public class PlaceholderProcessor {
             }
         }
 
-
-
         if(escapePercentage) {
-            format = format.replaceAll("%([^ ]*?)%", "").replace("%", "%%");
+            format = format.replaceAll("%([^ ]*?)%", "");
         }
 
         // placeholder regex, e.g. { prefix }, {suffix}
