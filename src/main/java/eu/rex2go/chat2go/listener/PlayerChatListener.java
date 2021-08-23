@@ -13,7 +13,6 @@ import eu.rex2go.chat2go.user.User;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -114,6 +113,7 @@ public class PlayerChatListener extends AbstractListener {
             return;
         }
 
+        // player muted
         if (user.isMuted()
                 && !user.hasPermission(ChatPermission.BYPASS_MUTE.getPermission())) {
             Mute mute = user.getMute();
@@ -176,15 +176,26 @@ public class PlayerChatListener extends AbstractListener {
             message = Chat2Go.parseColor(message);
         }
 
+        // escape % because without compatibility mode message is hard coded in format
+        if (!ChatConfig.useCompatibilityMode()) {
+            message = message.replace("%", "%%");
+        }
+
         BaseComponent[] messageComponents = TextComponent.fromLegacyText(message);
         String group = user.getPrimaryGroup();
         String chatFormat = ChatConfig.getChatFormatFormat();
+
+        // escape % because without compatibility mode message is hard coded in format
+        if (!ChatConfig.useCompatibilityMode()) {
+            message = message.replace("%", "%%");
+        }
 
         // group formats
         if (ChatConfig.getChatFormatGroupFormats().containsKey(group)) {
             chatFormat = ChatConfig.getChatFormatGroupFormats().get(group);
         }
 
+        // parse format color
         chatFormat = Chat2Go.parseColor(chatFormat);
 
         BaseComponent[] format = getFormat(user, null, chatFormat, messageComponents);
@@ -205,8 +216,8 @@ public class PlayerChatListener extends AbstractListener {
         }
 
         try {
-            event.setMessage(TextComponent.toLegacyText(messageComponents).replace("%", "%%"));
-            event.setFormat(TextComponent.toLegacyText(format).replace("%", "%%"));
+            event.setMessage(TextComponent.toLegacyText(messageComponents));
+            event.setFormat(TextComponent.toLegacyText(format));
         } catch (Exception exception) {
             Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Spigot formatting error: " + exception.getMessage());
             Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Your chat format is invalid.");
@@ -237,9 +248,17 @@ public class PlayerChatListener extends AbstractListener {
         // stop bukkit from sending the chat message, fix for e.g. DiscordSRV
         event.getRecipients().clear();
 
+        // workaround double percent bug
+        message = TextComponent.toLegacyText(messageComponents);
+        message = String.format(message);
+        messageComponents = TextComponent.fromLegacyText(message);
+
+        // update format
+        format = getFormat(user, null, chatFormat, messageComponents);
+
         // send messages individually
         for (Player recipient : recipients) {
-            if(ChatConfig.isGeneralRelationalPlaceholders()) {
+            if (ChatConfig.isGeneralRelationalPlaceholders()) {
                 format = getFormat(user, recipient, chatFormat, messageComponents);
                 recipient.spigot().sendMessage(format);
                 continue;
