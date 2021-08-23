@@ -142,7 +142,7 @@ public class ChatConfig extends RexConfig {
     private static Map<String, CustomComponent> customComponents;
 
     public ChatConfig() {
-        super(Chat2Go.getInstance(), "config.yml", 8);
+        super(Chat2Go.getInstance(), "config.yml", 9);
     }
 
     public static boolean useCompatibilityMode() {

@@ -36,7 +36,7 @@ public class PlaceholderProcessor {
 
             // placeholder api workaround regex e.g. %recipient_prefix%
             if(ChatConfig.isGeneralAdvancedPAPIResolving() && format.contains("%")) {
-                Pattern placeholderPattern = Pattern.compile("\\%(.*?)%");
+                Pattern placeholderPattern = Pattern.compile("%([^ ]*?)%");
                 Matcher placeholderMatcher = placeholderPattern.matcher(format);
 
                 while (placeholderMatcher.find()) {
@@ -67,8 +67,10 @@ public class PlaceholderProcessor {
             }
         }
 
+
+
         if(escapePercentage) {
-            format = format.replace("%", "%%");
+            format = format.replaceAll("%([^ ]*?)%", "").replace("%", "%%");
         }
 
         // placeholder regex, e.g. { prefix }, {suffix}

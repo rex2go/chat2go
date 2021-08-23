@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -184,26 +186,7 @@ public class PlayerChatListener extends AbstractListener {
 
         chatFormat = Chat2Go.parseColor(chatFormat);
 
-        String username = ChatConfig.useCompatibilityMode() ? "%1$s" : user.getPlayer().getDisplayName();
-
-        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(username));
-        Placeholder messagePlaceholder = new Placeholder("message", ChatConfig.useCompatibilityMode()
-                ? TextComponent.fromLegacyText("%2$s") : messageComponents);
-        Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
-        Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
-        Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(player.getWorld().getName()));
-        Placeholder groupPlaceholder = new Placeholder("group", TextComponent.fromLegacyText(user.getPrimaryGroup()));
-
-        BaseComponent[] format = PlaceholderProcessor.process(
-                chatFormat,
-                player,
-                true,
-                usernamePlaceholder,
-                messagePlaceholder,
-                prefixPlaceholder,
-                suffixPlaceholder,
-                worldPlaceholder,
-                groupPlaceholder);
+        BaseComponent[] format = getFormat(user, null, chatFormat, messageComponents);
 
         // fix message color
         for (int i = format.length - 1; i > 0; i--) {
@@ -254,8 +237,38 @@ public class PlayerChatListener extends AbstractListener {
         event.getRecipients().clear();
 
         // send messages individually
-        for (Player all : recipients) {
-            all.spigot().sendMessage(format);
+        for (Player recipient : recipients) {
+            if(ChatConfig.isGeneralRelationalPlaceholders()) {
+                format = getFormat(user, recipient, chatFormat, messageComponents);
+                recipient.spigot().sendMessage(format);
+                continue;
+            }
+
+            recipient.spigot().sendMessage(format);
         }
+    }
+
+    private BaseComponent[] getFormat(User user, @Nullable Player recipient, String chatFormat, BaseComponent[] messageComponents) {
+        String username = ChatConfig.useCompatibilityMode() ? "%1$s" : user.getPlayer().getDisplayName();
+
+        Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(username));
+        Placeholder messagePlaceholder = new Placeholder("message", ChatConfig.useCompatibilityMode()
+                ? TextComponent.fromLegacyText("%2$s") : messageComponents);
+        Placeholder prefixPlaceholder = new Placeholder("prefix", TextComponent.fromLegacyText(user.getPrefix()));
+        Placeholder suffixPlaceholder = new Placeholder("suffix", TextComponent.fromLegacyText(user.getSuffix()));
+        Placeholder worldPlaceholder = new Placeholder("world", TextComponent.fromLegacyText(user.getPlayer().getWorld().getName()));
+        Placeholder groupPlaceholder = new Placeholder("group", TextComponent.fromLegacyText(user.getPrimaryGroup()));
+
+        return PlaceholderProcessor.process(
+                chatFormat,
+                user.getPlayer(),
+                recipient,
+                true,
+                usernamePlaceholder,
+                messagePlaceholder,
+                prefixPlaceholder,
+                suffixPlaceholder,
+                worldPlaceholder,
+                groupPlaceholder);
     }
 }
