@@ -51,6 +51,8 @@ command:
   message:
     message_yourself: "&cYou can't message yourself."
     no_player_to_reply_to: "&cNo player to reply to."
+    toggle_enabled: "&7You are now private chatting with {0}"
+    toggle_disabled: "&7You are no longer private chatting with {0}"
 
   mute:
     muted: "&7You muted &f{0} &7for &f{1}&7."

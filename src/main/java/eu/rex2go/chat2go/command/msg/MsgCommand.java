@@ -27,11 +27,13 @@ public class MsgCommand extends WrappedCommandExecutor {
         checkPermission(sender, ChatPermission.COMMAND_MSG.getPermission());
         checkPlayer(sender);
 
-        Player player = user.getPlayer();
-        Player senderPlayer = (Player) sender;
+        if(args.length == 0 && user.isInPrivateChat()) {
+            user.setInPrivateChat(false);
+            return;
+        }
 
-        if (args.length < 2) {
-            getTranslator().sendMessage(sender, "§7/msg <{player}> <{message}>");
+        if (args.length < 1) {
+            getTranslator().sendMessage(sender, "§7/msg <{player}> [{message}]");
             return;
         }
 
@@ -50,7 +52,12 @@ public class MsgCommand extends WrappedCommandExecutor {
 
         // Message receiver user
         User target = Chat2Go.getUserManager().getUser(targetPlayer);
-        target.setLastChatter(user);
+
+        if(args.length == 1) {
+            user.setLastChatter(target);
+            user.setInPrivateChat(!user.isInPrivateChat());
+            return;
+        }
 
         // Build message, skip username (first argument)
         StringBuilder message = new StringBuilder();
@@ -61,27 +68,33 @@ public class MsgCommand extends WrappedCommandExecutor {
         // Remove trailing white space
         message = new StringBuilder(message.substring(0, message.length() - 1));
 
+        sendPrivateMessage(user, target, message.toString());
+    }
+
+    public static void sendPrivateMessage(User sender, User receiver, String message) {
+        receiver.setLastChatter(sender);
+
         String format = ChatConfig.getFormatPrivateMessage();
 
         format = Chat2Go.parseColor(format);
 
-        Placeholder senderPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(senderPlayer.getPlayer().getDisplayName()));
-        Placeholder senderPrefixPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(user.getPrefix()));
-        Placeholder senderSuffixPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(user.getSuffix()));
-        Placeholder senderWorldPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(senderPlayer.getPlayer().getWorld().getName()));
-        Placeholder senderGroupPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(user.getPrimaryGroup()));
+        Placeholder senderPlaceholder = new Placeholder("sender", TextComponent.fromLegacyText(sender.getPlayer().getDisplayName()));
+        Placeholder senderPrefixPlaceholder = new Placeholder("senderPrefix", TextComponent.fromLegacyText(sender.getPrefix()));
+        Placeholder senderSuffixPlaceholder = new Placeholder("senderSuffix", TextComponent.fromLegacyText(sender.getSuffix()));
+        Placeholder senderWorldPlaceholder = new Placeholder("senderWorld", TextComponent.fromLegacyText(sender.getPlayer().getWorld().getName()));
+        Placeholder senderGroupPlaceholder = new Placeholder("senderGroup", TextComponent.fromLegacyText(sender.getPrimaryGroup()));
 
-        Placeholder receiverPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(targetPlayer.getDisplayName()));
-        Placeholder receiverPrefixPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(target.getPrefix()));
-        Placeholder receiverSuffixPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(target.getSuffix()));
-        Placeholder receiverWorldPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(targetPlayer.getPlayer().getWorld().getName()));
-        Placeholder receiverGroupPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(target.getPrimaryGroup()));
+        Placeholder receiverPlaceholder = new Placeholder("receiver", TextComponent.fromLegacyText(receiver.getPlayer().getDisplayName()));
+        Placeholder receiverPrefixPlaceholder = new Placeholder("receiverPrefix", TextComponent.fromLegacyText(receiver.getPrefix()));
+        Placeholder receiverSuffixPlaceholder = new Placeholder("receiverSuffix", TextComponent.fromLegacyText(receiver.getSuffix()));
+        Placeholder receiverWorldPlaceholder = new Placeholder("receiverWorld", TextComponent.fromLegacyText(receiver.getPlayer().getWorld().getName()));
+        Placeholder receiverGroupPlaceholder = new Placeholder("receiverGroup", TextComponent.fromLegacyText(receiver.getPrimaryGroup()));
 
-        Placeholder messagePlaceholder = new Placeholder("message", TextComponent.fromLegacyText(message.toString()));
+        Placeholder messagePlaceholder = new Placeholder("message", TextComponent.fromLegacyText(message));
 
         BaseComponent[] components = PlaceholderProcessor.process(
                 format,
-                senderPlayer,
+                sender.getPlayer(),
                 senderPlaceholder,
                 senderPrefixPlaceholder,
                 senderSuffixPlaceholder,
@@ -94,7 +107,7 @@ public class MsgCommand extends WrappedCommandExecutor {
                 receiverGroupPlaceholder,
                 messagePlaceholder);
 
-        targetPlayer.spigot().sendMessage(components);
-        player.spigot().sendMessage(components);
+        sender.getPlayer().spigot().sendMessage(components);
+        receiver.getPlayer().spigot().sendMessage(components);
     }
 }

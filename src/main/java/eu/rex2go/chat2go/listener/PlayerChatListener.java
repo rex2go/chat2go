@@ -3,6 +3,7 @@ package eu.rex2go.chat2go.listener;
 import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.ChatPermission;
 import eu.rex2go.chat2go.chat.AntiSpam;
+import eu.rex2go.chat2go.command.msg.MsgCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.exception.FilterException;
 import eu.rex2go.chat2go.placeholder.Placeholder;
@@ -96,6 +97,13 @@ public class PlayerChatListener extends AbstractListener {
         if (user == null) {
             event.setCancelled(true);
             player.sendMessage("§cError");
+            return;
+        }
+
+        // private chat
+        if(user.isInPrivateChat()) {
+            MsgCommand.sendPrivateMessage(user, user.getLastChatter(), event.getMessage());
+            event.setCancelled(true);
             return;
         }
 

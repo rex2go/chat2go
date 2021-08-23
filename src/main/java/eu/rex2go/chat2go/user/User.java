@@ -31,8 +31,9 @@ public class User {
     private long lastMessageTime = 0;
 
     @Getter
-    @Setter
     private User lastChatter;
+
+    private boolean inPrivateChat = false;
 
     public User(UUID uuid, String name) {
         this.uuid = uuid;
@@ -170,5 +171,43 @@ public class User {
         }
 
         connectionWrapper.close();
+    }
+
+    public String getDisplayName() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getDisplayName();
+        }
+
+        return name;
+    }
+
+    public void setInPrivateChat(boolean value) {
+        if (getLastChatter() == null) return;
+
+        if (value) {
+            sendMessage("command.message.toggle_enabled", false, getLastChatter().getDisplayName());
+        } else {
+            sendMessage("command.message.toggle_disabled", false, getLastChatter().getDisplayName());
+        }
+
+        inPrivateChat = value;
+    }
+
+    public boolean isInPrivateChat() {
+        if (inPrivateChat && getLastChatter() == null) {
+            setInPrivateChat(false);
+        }
+
+        return inPrivateChat;
+    }
+
+    public void setLastChatter(User lastChatter) {
+        if(inPrivateChat) {
+            setInPrivateChat(false);
+        }
+
+        this.lastChatter = lastChatter;
     }
 }
