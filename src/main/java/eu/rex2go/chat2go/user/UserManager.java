@@ -171,6 +171,28 @@ public class UserManager {
         return mute;
     }
 
+    public void loadIgnoreList(User user, Connection connection) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT ignore_uuid FROM `ignore` WHERE `user_uuid` = ?");
+            ps.setString(1, user.getUuid().toString());
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                // exists
+
+                UUID ignoreUUID = UUID.fromString(rs.getString("ignore_uuid"));
+
+                user.getIgnored().add(ignoreUUID);
+            }
+
+            rs.close();
+            ps.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     private void loadStatistics(User user, Connection connection) {
         // TODO
     }

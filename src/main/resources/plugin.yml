@@ -49,3 +49,15 @@ commands:
     description: Force a message or command executed by a player
     usage: "§cUsage: /<command> <player> <message>"
     permission: chat2go.command.force
+  ignore:
+    description: Ignore a player
+    usage: "§cUsage: /<command> <player>"
+    permission: chat2go.command.ignore
+  unignore:
+    description: Unignore a player
+    usage: "§cUsage: /<command> <player>"
+    permission: chat2go.command.ignore
+  ignorelist:
+    description: List ignored players
+    usage: "§cUsage: /<command>"
+    permission: chat2go.command.ignore

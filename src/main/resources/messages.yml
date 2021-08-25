@@ -4,6 +4,9 @@ player: "player"
 time: "time"
 reason: "reason"
 
+ignore_list: "Ignore List"
+unignore: "unignore"
+
 pagination: "&7Page &b{0} &7of &b{1}"
 next_page: "Next page"
 previous_page: "Previous page"
@@ -23,6 +26,19 @@ chat:
     blocked: "&cYour message containing \"{0}\" has been blocked."
 
 command:
+  ignore:
+    ignored: "&7You are now ignoring {0}."
+    already_ignoring: "&cYou are already ignoring {0}."
+    ignore_yourself: "&cYou can't ignore yourself."
+
+  unignore:
+    unignored: "&7You are no longer ignoring {0}."
+    not_ignoring: "&7You are not ignoring {0}."
+
+  ignorelist:
+    no_ignored: "&cNo ignores found. &7You can add one using /ignore <player>."
+    unignore_hover: "Unignore {0}"
+
   error:
     no_permission: "&cYou are not permitted to execute this command."
     player_not_found: "&cPlayer \"{0}\" could not be found."
@@ -69,4 +85,4 @@ command:
 
 
 # do not touch
-version: 2
+version: 3

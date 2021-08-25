@@ -4,9 +4,12 @@ import eu.rex2go.chat2go.chat.ChatManager;
 import eu.rex2go.chat2go.command.broadcast.BroadcastCommand;
 import eu.rex2go.chat2go.command.chat.ChatCommand;
 import eu.rex2go.chat2go.command.force.ForceCommand;
+import eu.rex2go.chat2go.command.ignore.IgnoreCommand;
+import eu.rex2go.chat2go.command.ignorelist.IgnoreListCommand;
 import eu.rex2go.chat2go.command.msg.MsgCommand;
 import eu.rex2go.chat2go.command.mute.MuteCommand;
 import eu.rex2go.chat2go.command.reply.ReplyCommand;
+import eu.rex2go.chat2go.command.unignore.UnignoreCommand;
 import eu.rex2go.chat2go.command.unmute.UnmuteCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.config.MessageConfig;
@@ -179,6 +182,9 @@ public class Chat2Go extends JavaPlugin {
     private void setupCommands() {
         new BroadcastCommand();
         new ChatCommand();
+        new IgnoreCommand();
+        new UnignoreCommand();
+        new IgnoreListCommand();
         new ForceCommand();
         new MsgCommand();
         new MuteCommand();
@@ -244,6 +250,11 @@ public class Chat2Go extends JavaPlugin {
 
             // mute table
             ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `mute` ( user_uuid VARCHAR(32) NOT NULL, time BIGINT NOT NULL, unmuteTime BIGINT NOT NULL, reason VARCHAR(256), muter_uuid VARCHAR(32), PRIMARY KEY (user_uuid), FOREIGN KEY (user_uuid) REFERENCES user (uuid), FOREIGN KEY (muter_uuid) REFERENCES user (uuid) );");
+            ps.execute();
+            ps.close();
+
+            // ignore table
+            ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `ignore` ( user_uuid VARCHAR(32) NOT NULL, ignore_uuid VARCHAR(32) NOT NULL, FOREIGN KEY (user_uuid) REFERENCES user(uuid), FOREIGN KEY (ignore_uuid) REFERENCES user(uuid) );");
             ps.execute();
             ps.close();
 

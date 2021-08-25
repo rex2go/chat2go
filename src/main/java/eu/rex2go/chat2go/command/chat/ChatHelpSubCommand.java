@@ -47,6 +47,15 @@ public class ChatHelpSubCommand extends SubCommand {
         sender.sendMessage(ChatColor.WHITE + "- " + color + "/force <player> <command|message> " + ChatColor.WHITE + " | "
                 + ChatColor.GRAY + " force a player");
 
+        sender.sendMessage(ChatColor.WHITE + "- " + color + "/ignore <player> " + ChatColor.WHITE + " | "
+                + ChatColor.GRAY + " ignore a player");
+
+        sender.sendMessage(ChatColor.WHITE + "- " + color + "/unignore <player> " + ChatColor.WHITE + " | "
+                + ChatColor.GRAY + " unignore a player");
+
+        sender.sendMessage(ChatColor.WHITE + "- " + color + "/ignorelist " + ChatColor.WHITE + " | "
+                + ChatColor.GRAY + " list ignored players");
+
         sender.sendMessage(ChatColor.GRAY + "---                  ---");
     }
 }
