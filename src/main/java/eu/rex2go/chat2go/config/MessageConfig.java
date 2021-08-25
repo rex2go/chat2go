@@ -7,7 +7,7 @@ import java.util.Map;
 public class MessageConfig extends RexConfig {
 
     public MessageConfig() {
-        super(Chat2Go.getInstance(), "messages.yml", 2);
+        super(Chat2Go.getInstance(), "messages.yml", 3);
     }
 
     @Override

@@ -218,8 +218,19 @@ public class PlayerChatListener extends AbstractListener {
             Chat2Go.getInstance().getLogger().log(Level.SEVERE, "Your chat format is invalid.");
         }
 
-        // TODO filter ignore list
+        // avoid concurrent modification exception
         Set<Player> recipients = new HashSet<>(event.getRecipients());
+
+        for(Player recipient : recipients) {
+            User recipientUser = Chat2Go.getUser(recipient);
+
+            if(recipientUser.getIgnored().contains(user.getUuid())) {
+                event.getRecipients().remove(recipient);
+            }
+        }
+
+        // update
+        recipients = new HashSet<>(event.getRecipients());
 
         if (ChatConfig.isChatWorldChatEnabled()) {
             for (Player recipient : recipients) {

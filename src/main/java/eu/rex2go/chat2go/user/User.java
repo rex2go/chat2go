@@ -10,9 +10,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class User {
@@ -37,6 +35,9 @@ public class User {
 
     private boolean inPrivateChat = false;
 
+    @Getter
+    private List<UUID> ignored = new ArrayList<>();
+
     public User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
@@ -46,6 +47,7 @@ public class User {
         if (connectionWrapper == null) return;
 
         this.mute = Chat2Go.getUserManager().loadMute(this, connectionWrapper.getConnection());
+        Chat2Go.getUserManager().loadIgnoreList(this, connectionWrapper.getConnection());
 
         connectionWrapper.close();
     }
@@ -225,5 +227,55 @@ public class User {
         for (Player recipient : asyncPlayerChatEvent.getRecipients()) {
             recipient.sendMessage(formatted);
         }
+    }
+
+
+    public boolean ignore(User user) {
+        if (ignored.contains(user.getUuid())) return false;
+
+        ignored.add(user.getUuid());
+
+        ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();
+        PreparedStatement preparedStatement = connectionWrapper.prepareStatement(
+                "INSERT INTO `ignore` (user_uuid, ignore_uuid) VALUES (?, ?)");
+
+        try {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, user.getUuid().toString());
+
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        connectionWrapper.close();
+
+        return true;
+    }
+
+
+    public boolean unignore(User user) {
+        if (!ignored.contains(user.getUuid())) return false;
+
+        ignored.remove(user.getUuid());
+
+        ConnectionWrapper connectionWrapper = DatabaseManager.getConnectionWrapper();
+        PreparedStatement preparedStatement = connectionWrapper.prepareStatement(
+                "DELETE FROM `ignore` WHERE user_uuid = ? AND ignore_uuid = ?");
+
+        try {
+            preparedStatement.setString(1, uuid.toString());
+            preparedStatement.setString(2, user.getUuid().toString());
+
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        connectionWrapper.close();
+
+        return true;
     }
 }
