@@ -70,8 +70,8 @@ public class UserManager {
                     // update remote username
 
                     PreparedStatement ps1 = connection.prepareStatement("UPDATE `user` SET `username` = ? WHERE `uuid` = ? ");
-                    ps1.setString(1, uuid.toString());
-                    ps1.setString(2, username);
+                    ps1.setString(1, username);
+                    ps1.setString(2, uuid.toString());
 
                     ps1.execute();
                     ps1.close();
