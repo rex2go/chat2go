@@ -69,9 +69,6 @@ public class UserManager {
                 if (!username.equalsIgnoreCase(rs.getString("username"))) {
                     // update remote username
 
-                    Bukkit.broadcastMessage(uuid.toString());
-                    Bukkit.broadcastMessage(username);
-
                     PreparedStatement ps1 = connection.prepareStatement("UPDATE `user` SET `username` = ? WHERE `uuid` = ? ");
                     ps1.setString(1, uuid.toString());
                     ps1.setString(2, username);
