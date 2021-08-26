@@ -3,6 +3,7 @@ package eu.rex2go.chat2go.user;
 
 import eu.rex2go.chat2go.Chat2Go;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -68,7 +69,10 @@ public class UserManager {
                 if (!username.equalsIgnoreCase(rs.getString("username"))) {
                     // update remote username
 
-                    PreparedStatement ps1 = connection.prepareStatement("UPDATE `user` WHERE `uuid` = ? SET `username` = ?");
+                    Bukkit.broadcastMessage(uuid.toString());
+                    Bukkit.broadcastMessage(username);
+
+                    PreparedStatement ps1 = connection.prepareStatement("UPDATE `user` SET `username` = ? WHERE `uuid` = ? ");
                     ps1.setString(1, uuid.toString());
                     ps1.setString(2, username);
 
