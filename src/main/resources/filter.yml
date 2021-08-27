@@ -1,0 +1,7 @@
+blockedWords:
+  - fuck
+
+replacements:
+  ':heart:': '♥'
+
+version: 1 # do not touch

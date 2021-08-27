@@ -12,6 +12,7 @@ import eu.rex2go.chat2go.command.reply.ReplyCommand;
 import eu.rex2go.chat2go.command.unignore.UnignoreCommand;
 import eu.rex2go.chat2go.command.unmute.UnmuteCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
+import eu.rex2go.chat2go.config.FilterConfig;
 import eu.rex2go.chat2go.config.MessageConfig;
 import eu.rex2go.chat2go.database.DatabaseManager;
 import eu.rex2go.chat2go.listener.PlayerChatListener;
@@ -59,6 +60,9 @@ public class Chat2Go extends JavaPlugin {
 
     @Getter
     private static MessageConfig messageConfig;
+
+    @Getter
+    private static FilterConfig filterConfig;
 
     @Getter
     private static boolean vaultInstalled;
@@ -125,6 +129,10 @@ public class Chat2Go extends JavaPlugin {
         // setup message config
         messageConfig = new MessageConfig();
         messageConfig.load();
+
+        // setup filter config
+        filterConfig = new FilterConfig();
+        filterConfig.load();
 
         checkDependencies();
 
@@ -237,11 +245,6 @@ public class Chat2Go extends JavaPlugin {
                 ps.execute();
                 ps.close();
             }
-
-            // bad word table
-            ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `badword` ( badword VARCHAR(64) NOT NULL, PRIMARY KEY (badword) );");
-            ps.execute();
-            ps.close();
 
             // user table
             ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `user` ( uuid VARCHAR(32) NOT NULL, username VARCHAR(16) NOT NULL, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (uuid) );");
