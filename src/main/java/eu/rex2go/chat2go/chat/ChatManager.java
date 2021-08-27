@@ -2,6 +2,7 @@ package eu.rex2go.chat2go.chat;
 
 import eu.rex2go.chat2go.Chat2Go;
 import eu.rex2go.chat2go.config.ChatConfig;
+import eu.rex2go.chat2go.config.FilterConfig;
 import eu.rex2go.chat2go.exception.FilterException;
 import eu.rex2go.chat2go.filter.AdvertisementFilter;
 import eu.rex2go.chat2go.filter.BadWordFilter;
@@ -17,6 +18,16 @@ public class ChatManager {
     public ChatManager() {
         filters.add(new BadWordFilter());
         filters.add(new AdvertisementFilter());
+    }
+
+    public String replacements(String message) {
+        for(String replace : FilterConfig.getReplacements().keySet()) {
+            String replacement = FilterConfig.getReplacements().get(replace);
+
+            message = message.replace(replace, replacement);
+        }
+
+        return message;
     }
 
     public String filter(String message) throws FilterException {

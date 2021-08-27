@@ -52,5 +52,23 @@ public class ChatReloadSubCommand extends SubCommand {
                 true,
                 config.getFileName()
         );
+
+        config = Chat2Go.getFilterConfig();
+
+        Chat2Go.sendMessage(
+                sender,
+                "command.chat.reload.reloading",
+                true,
+                config.getFileName()
+        );
+
+        config.reload();
+
+        Chat2Go.sendMessage(
+                sender,
+                "command.chat.reload.reloaded",
+                true,
+                config.getFileName()
+        );
     }
 }
