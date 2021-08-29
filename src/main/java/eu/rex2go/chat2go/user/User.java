@@ -1,9 +1,15 @@
 package eu.rex2go.chat2go.user;
 
 import eu.rex2go.chat2go.Chat2Go;
+import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.database.ConnectionWrapper;
 import eu.rex2go.chat2go.database.DatabaseManager;
+import eu.rex2go.chat2go.placeholder.Placeholder;
+import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
 import lombok.Getter;
+import lombok.Setter;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -37,6 +43,10 @@ public class User {
 
     @Getter
     private List<UUID> ignored = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private User spyTarget;
 
     public User(UUID uuid, String name) {
         this.uuid = uuid;
@@ -277,5 +287,64 @@ public class User {
         connectionWrapper.close();
 
         return true;
+    }
+
+    public void sendPrivateMessage(User sender, String message) {
+        setLastChatter(this);
+
+        String formatTo = ChatConfig.getFormatPrivateMessageTo();
+        String formatFrom = ChatConfig.getFormatPrivateMessageFrom();
+
+        formatTo = Chat2Go.parseColor(formatTo);
+        formatFrom = Chat2Go.parseColor(formatFrom);
+
+        Placeholder senderPlaceholder = new Placeholder("sender", TextComponent.fromLegacyText(sender.getPlayer().getDisplayName()));
+        Placeholder senderPrefixPlaceholder = new Placeholder("senderPrefix", TextComponent.fromLegacyText(sender.getPrefix()));
+        Placeholder senderSuffixPlaceholder = new Placeholder("senderSuffix", TextComponent.fromLegacyText(sender.getSuffix()));
+        Placeholder senderWorldPlaceholder = new Placeholder("senderWorld", TextComponent.fromLegacyText(sender.getPlayer().getWorld().getName()));
+        Placeholder senderGroupPlaceholder = new Placeholder("senderGroup", TextComponent.fromLegacyText(sender.getPrimaryGroup()));
+
+        Placeholder recipientPlaceholder = new Placeholder("recipient", TextComponent.fromLegacyText(getPlayer().getDisplayName()));
+        Placeholder recipientPrefixPlaceholder = new Placeholder("recipientPrefix", TextComponent.fromLegacyText(getPrefix()));
+        Placeholder recipientSuffixPlaceholder = new Placeholder("recipientSuffix", TextComponent.fromLegacyText(getSuffix()));
+        Placeholder recipientWorldPlaceholder = new Placeholder("recipientWorld", TextComponent.fromLegacyText(getPlayer().getWorld().getName()));
+        Placeholder recipientGroupPlaceholder = new Placeholder("recipientGroup", TextComponent.fromLegacyText(getPrimaryGroup()));
+
+        Placeholder messagePlaceholder = new Placeholder("message", TextComponent.fromLegacyText(message));
+
+        BaseComponent[] components = PlaceholderProcessor.process(
+                formatTo,
+                getPlayer(),
+                false,
+                senderPlaceholder,
+                senderPrefixPlaceholder,
+                senderSuffixPlaceholder,
+                senderWorldPlaceholder,
+                senderGroupPlaceholder,
+                recipientPlaceholder,
+                recipientPrefixPlaceholder,
+                recipientSuffixPlaceholder,
+                recipientWorldPlaceholder,
+                recipientGroupPlaceholder,
+                messagePlaceholder);
+
+        BaseComponent[] componentsSender = PlaceholderProcessor.process(
+                formatFrom,
+                sender.getPlayer(),
+                false,
+                senderPlaceholder,
+                senderPrefixPlaceholder,
+                senderSuffixPlaceholder,
+                senderWorldPlaceholder,
+                senderGroupPlaceholder,
+                recipientPlaceholder,
+                recipientPrefixPlaceholder,
+                recipientSuffixPlaceholder,
+                recipientWorldPlaceholder,
+                recipientGroupPlaceholder,
+                messagePlaceholder);
+
+        sender.getPlayer().spigot().sendMessage(componentsSender);
+        getPlayer().spigot().sendMessage(components);
     }
 }

@@ -55,6 +55,6 @@ public class ReplyCommand extends WrappedCommandExecutor {
         // Remove trailing white space
         message = new StringBuilder(message.substring(0, message.length() - 1));
 
-        MsgCommand.sendPrivateMessage(user, target, message.toString());
+        target.sendPrivateMessage(user, message.toString());
     }
 }
