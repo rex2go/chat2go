@@ -56,6 +56,9 @@ public class ChatHelpSubCommand extends SubCommand {
         sender.sendMessage(ChatColor.WHITE + "- " + color + "/ignorelist " + ChatColor.WHITE + " | "
                 + ChatColor.GRAY + " list ignored players");
 
+        sender.sendMessage(ChatColor.WHITE + "- " + color + "/spy <player> " + ChatColor.WHITE + " | "
+                + ChatColor.GRAY + " spy a player");
+
         sender.sendMessage(ChatColor.GRAY + "---                  ---");
     }
 }
