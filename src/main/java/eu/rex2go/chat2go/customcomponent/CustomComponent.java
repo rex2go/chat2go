@@ -73,8 +73,6 @@ public class CustomComponent {
             }
         }
 
-        player.spigot().sendMessage(components);
-
         return components;
     }
 

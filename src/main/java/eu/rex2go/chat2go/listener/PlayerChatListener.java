@@ -168,6 +168,9 @@ public class PlayerChatListener extends AbstractListener {
             }
         }
 
+        // process replacements
+        message = Chat2Go.getChatManager().replacements(message);
+
         user.setLastMessage(message);
 
         // parse colors

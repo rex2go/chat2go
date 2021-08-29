@@ -17,11 +17,15 @@ public abstract class RexConfig {
 
     @Getter
     private final int version;
+
     protected JavaPlugin plugin;
+
     @Getter
     private String fileName;
+
     @Getter
     private FileConfiguration config;
+
     @Getter
     private File file;
 
