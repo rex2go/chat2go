@@ -9,6 +9,7 @@ import eu.rex2go.chat2go.command.ignorelist.IgnoreListCommand;
 import eu.rex2go.chat2go.command.msg.MsgCommand;
 import eu.rex2go.chat2go.command.mute.MuteCommand;
 import eu.rex2go.chat2go.command.reply.ReplyCommand;
+import eu.rex2go.chat2go.command.spy.SpyCommand;
 import eu.rex2go.chat2go.command.unignore.UnignoreCommand;
 import eu.rex2go.chat2go.command.unmute.UnmuteCommand;
 import eu.rex2go.chat2go.config.ChatConfig;
@@ -16,6 +17,7 @@ import eu.rex2go.chat2go.config.FilterConfig;
 import eu.rex2go.chat2go.config.MessageConfig;
 import eu.rex2go.chat2go.database.DatabaseManager;
 import eu.rex2go.chat2go.listener.PlayerChatListener;
+import eu.rex2go.chat2go.listener.PlayerCommandPreprocessListener;
 import eu.rex2go.chat2go.listener.PlayerJoinListener;
 import eu.rex2go.chat2go.listener.PlayerQuitListener;
 import eu.rex2go.chat2go.translator.Translator;
@@ -171,6 +173,7 @@ public class Chat2Go extends JavaPlugin {
 
     private void registerListener() {
         new PlayerChatListener();
+        new PlayerCommandPreprocessListener();
         new PlayerJoinListener();
         new PlayerQuitListener();
     }
@@ -198,6 +201,7 @@ public class Chat2Go extends JavaPlugin {
         new MuteCommand();
         new ReplyCommand();
         new UnmuteCommand();
+        new SpyCommand();
     }
 
     private void setupManagers() {

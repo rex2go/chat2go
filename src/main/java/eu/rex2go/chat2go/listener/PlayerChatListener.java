@@ -101,7 +101,7 @@ public class PlayerChatListener extends AbstractListener {
 
         // private chat
         if (user.isInPrivateChat()) {
-            MsgCommand.sendPrivateMessage(user, user.getLastChatter(), event.getMessage());
+            user.getLastChatter().sendPrivateMessage(user, event.getMessage());
             event.setCancelled(true);
             return;
         }
