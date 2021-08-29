@@ -351,6 +351,8 @@ public class User {
 
         // spy msg
         for (User user : Chat2Go.getUserManager().getUsers()) {
+            if(user.equals(this)) continue;
+            if(user.equals(sender)) continue;
             if (user.getSpyTarget() == null) continue;
             if (!user.hasPermission(ChatPermission.COMMAND_SPY.getPermission())) continue;
 
