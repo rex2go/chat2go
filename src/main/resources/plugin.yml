@@ -61,3 +61,7 @@ commands:
     description: List ignored players
     usage: "§cUsage: /<command>"
     permission: chat2go.command.ignore
+  spy:
+    description: Spy a player
+    usage: "§cUsage: /<command> <player>"
+    permission: chat2go.command.spy

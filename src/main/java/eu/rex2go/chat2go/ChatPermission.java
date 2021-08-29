@@ -15,6 +15,7 @@ public enum ChatPermission {
     COMMAND_IGNORE,
     COMMAND_FORCE,
     COMMAND_MUTE,
+    COMMAND_SPY,
     NOTIFY_FILTER;
 
     public String getPermission() {

@@ -1,11 +1,13 @@
 package eu.rex2go.chat2go.user;
 
 import eu.rex2go.chat2go.Chat2Go;
+import eu.rex2go.chat2go.ChatPermission;
 import eu.rex2go.chat2go.config.ChatConfig;
 import eu.rex2go.chat2go.database.ConnectionWrapper;
 import eu.rex2go.chat2go.database.DatabaseManager;
 import eu.rex2go.chat2go.placeholder.Placeholder;
 import eu.rex2go.chat2go.placeholder.PlaceholderProcessor;
+import jdk.jfr.SettingDefinition;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -45,8 +47,11 @@ public class User {
     private List<UUID> ignored = new ArrayList<>();
 
     @Getter
-    @Setter
     private User spyTarget;
+
+    @Getter
+    @Setter
+    private boolean spyCommands = false;
 
     public User(UUID uuid, String name) {
         this.uuid = uuid;
@@ -290,7 +295,7 @@ public class User {
     }
 
     public void sendPrivateMessage(User sender, String message) {
-        setLastChatter(this);
+        setLastChatter(sender);
 
         String formatTo = ChatConfig.getFormatPrivateMessageTo();
         String formatFrom = ChatConfig.getFormatPrivateMessageFrom();
@@ -344,7 +349,37 @@ public class User {
                 recipientGroupPlaceholder,
                 messagePlaceholder);
 
+        // spy msg
+        for (User user : Chat2Go.getUserManager().getUsers()) {
+            if (user.getSpyTarget() == null) continue;
+            if (!user.hasPermission(ChatPermission.COMMAND_SPY.getPermission())) continue;
+
+            if (user.getSpyTarget().equals(sender)) {
+                user.getPlayer().sendMessage("§6Spy (" + sender.getDisplayName() + "): §7" + TextComponent.toLegacyText(componentsSender));
+                continue;
+            }
+
+            if (user.getSpyTarget().equals(this)) {
+                user.getPlayer().sendMessage("§6Spy (" + getDisplayName() + "): §7" + TextComponent.toLegacyText(components));
+                continue;
+            }
+        }
+
         sender.getPlayer().spigot().sendMessage(componentsSender);
         getPlayer().spigot().sendMessage(components);
+    }
+
+    public void setSpyTarget(User spyTarget) {
+        if (spyTarget == null) {
+            if (this.spyTarget != null) {
+                sendMessage("command.spy.spying_disabled", false, this.spyTarget.getDisplayName());
+            }
+
+            this.spyCommands = false;
+        } else {
+            sendMessage("command.spy.spying_enabled", false, spyTarget.getDisplayName());
+        }
+
+        this.spyTarget = spyTarget;
     }
 }

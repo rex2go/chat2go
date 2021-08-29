@@ -83,6 +83,11 @@ command:
     unmuted_target: "&7You have been unmuted."
     not_muted: "&c{0} is not muted."
 
+  spy:
+    spying_enabled: "&7You are now spying on {0}."
+    spying_disabled: "&7You are no longer spying on {0}."
+    spy_yourself: "&cYou can't spy yourself."
+
 
 # do not touch
-version: 3
+version: 4
