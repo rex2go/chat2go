@@ -3,7 +3,6 @@ package eu.rex2go.chat2go.translator;
 import eu.rex2go.chat2go.Chat2Go;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.ArrayList;
 import java.util.Arrays;
