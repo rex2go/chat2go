@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import eu.rex2go.chat2go.Chat2Go;
 import lombok.Getter;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,8 +41,7 @@ public class DatabaseManager {
         this.initMySQLHikari();
     }
 
-    public static @Nullable
-    ConnectionWrapper getConnectionWrapper() {
+    public static ConnectionWrapper getConnectionWrapper() {
         DatabaseManager databaseManager = Chat2Go.getDatabaseManager();
         ConnectionWrapper connectionWrapper = null;
 

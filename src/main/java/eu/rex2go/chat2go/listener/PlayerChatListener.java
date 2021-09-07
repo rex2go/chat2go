@@ -18,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -277,7 +276,7 @@ public class PlayerChatListener extends AbstractListener {
         }
     }
 
-    private BaseComponent[] getFormat(User user, @Nullable Player recipient, String chatFormat, BaseComponent[] messageComponents) {
+    private BaseComponent[] getFormat(User user, Player recipient, String chatFormat, BaseComponent[] messageComponents) {
         String username = ChatConfig.useCompatibilityMode() ? "%1$s" : user.getPlayer().getDisplayName();
 
         Placeholder usernamePlaceholder = new Placeholder("username", TextComponent.fromLegacyText(username));
